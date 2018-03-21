@@ -8,6 +8,16 @@
 
 using namespace std;
 
+typedef struct {
+	string mensagem;
+	bool status;
+} erro;
+
+typedef struct{
+	string t1;
+	string t2;
+} split;
+
 class Util
 {
 	public:

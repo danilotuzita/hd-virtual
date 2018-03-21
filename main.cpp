@@ -3,7 +3,9 @@
 using namespace std;
 
 int main(){
-
+	system("title HD_VIRTUAL");
+	cout << "FEI [versao 1.0]\n(c) 2018 FEI - CC6270 - Giovanni/Danilo/Guilherme.\n\n";
+/*
 //	FILE * f = fopen("bomdia.txt", "wb");
 //	fwrite(&b, sizeof(Bloco), 1, f);
 //	fclose(f);
@@ -20,9 +22,29 @@ int main(){
 //	b.setDados("Teste        ''\n'' testando tes8tando\n\n\n\n\n\n\ barra n");
 	cout << "Nome: '"<<b.getNome()<<"'"<< endl;
 	cout << "Dados: "<<b.getDados()<<endl;
-	
+*/
 
-	system("pause");
+	Comandos c;
+
+	string linha = "";
+	erro e;
+
+	while(linha != "exit"){
+		cout << "> ";
+  		linha.clear();
+		getline(cin, linha);
+		c.setComando(linha);
+		e = c.validarComando();
+		if(e.status){
+            system("echo \033[31m ");
+			cout << "Comando nao reconhecido\n";
+			cout << linha << endl;
+			cout << e.mensagem << endl;
+			system("echo \033[0m");
+			e.status = false;
+		}
+	}
+
 	//system("bomdia.txt");
 	return 0;
 }

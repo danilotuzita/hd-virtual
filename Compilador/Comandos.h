@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <string>
+#include "../Classes/Util.h"
 
 using namespace std;
 
@@ -15,6 +16,7 @@ class Comandos{
 		string comando;
 		string parametro;
 		string comandoCompleto;
+		split separar(string);
 		
 	public:
 	
@@ -25,9 +27,7 @@ class Comandos{
 		string getComando();
 		string getParametros();
 		void separarComando();
-		bool validarComando(int printar = 0);
-		int a;
-
+		erro validarComando();
 
 };
 
