@@ -3,6 +3,10 @@
 using namespace std;
 
 int main(){
+
+	string a = "123456789abananananp";
+	cout << a[a.size() - 1] << endl;
+
 	system("title HD GAMMA");
 	cout << "FEI [versao 1.0]\n(c) 2018 FEI - CC6270 (Giovanni/Danilo/Guilherme) Todos os direitos reservados.\n\n";
 

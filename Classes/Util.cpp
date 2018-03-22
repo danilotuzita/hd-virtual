@@ -41,5 +41,13 @@ void Util::formatByte(int byte, bitset<8> b)
 		cout<<" | DEC: "<<(int)c<<" - CHAR: "<<c<<endl;
 }
 
+std::string Util::itos(int number)
+{
+     std::ostringstream ss;
+     ss << number;
+     return ss.str();
+}
+
+
 
 

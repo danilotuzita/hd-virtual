@@ -27,13 +27,16 @@ class HD
 		erro createHD(string, int);
 		void headHD();
 		
-		void propriedadesHD();
+		void openHD(string);
+		
+		void propriedadesHD(string *);
 		
 	private:
 		vector<Bloco> hd;
 		string nome;
 		FILE* fp;
 		int TAM;
+		Util u;
 };
 
 

@@ -1,13 +1,5 @@
 #include "HD.h"
-
-template <typename T>
-std::string NumberToString ( T Number )
-{
-     std::ostringstream ss;
-     ss << Number;
-     return ss.str();
-}
-
+#include "Util.h"
 
 HD::HD()
 {
@@ -54,18 +46,33 @@ erro HD::createHD(string n, int t)
 void HD::headHD(){
 	Bloco base;
 	base.setDados(BYTE_HEADER_NOME, SIZE_HEADER_NOME, nome);
-	string s = NumberToString <int>(TAM);
+	string s = u.itos(TAM);
 	base.setDados(BYTE_HEADER_TAMANHO, SIZE_HEADER_TAMANHO, s);
 	hd[POS_HEADER] = base;
-cout << 7;
 }
 
-void HD::propriedadesHD(){
+void HD::propriedadesHD(string * mensagem){
 
-	cout << "Nome: " << hd[POS_HEADER].getDados(BYTE_HEADER_NOME, SIZE_HEADER_NOME) << endl;
+	mensagem[0] = "Nome: " + hd[POS_HEADER].getDados(BYTE_HEADER_NOME, SIZE_HEADER_NOME);
 	int temp_tam = (atoi(hd[POS_HEADER].getDados(BYTE_HEADER_TAMANHO, SIZE_HEADER_TAMANHO).c_str()) * MAX_BYTE) / 1024;
-	cout << "Tamanho: " << temp_tam << "kb" << endl;
+	mensagem[1] = "Tamanho: " + u.itos(temp_tam) + "kb";
 
 }
 
+// TERMINAR
+erro HD::openHD(string nomeHD){
 
+	erro e;
+	e.status = false;
+	e.mensagem.clear();
+	
+	nomeHD += ".hd";
+	
+	fp = fopen (nomeHD.c_str(), "wb");
+	
+	
+	if (fp==NULL) {
+		e.status = true;
+		e.mensagem = "Nao foi possivel abrir o HD selecionado";
+	}
+}

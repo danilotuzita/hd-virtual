@@ -12,13 +12,31 @@ class Comandos{
 
 	private:
 
-		bool validarParametros(int cod_comando, string parametros);
-		int getCodComando(char * nome_comando);
+        split t;
+        erro e;
+
 		string comando;
 		string parametro;
 		string comandoCompleto;
-		split separar(string);
+
 		HD hd;
+		string nomeHD;
+		
+		bool validarParametros(int cod_comando, string parametros);
+		int getCodComando(char * nome_comando);
+		split separar(string);
+		
+		// Funcões de comando
+		void create();
+		void format();
+		void remove();
+		void move();
+		void df();
+		void cat();
+		void cd();
+		void ls();
+		void help();
+
 		
 	public:
 	
@@ -30,6 +48,7 @@ class Comandos{
 		string getParametros();
 		void separarComando();
 		erro validarComando();
+		string getNomeHD();
 
 };
 

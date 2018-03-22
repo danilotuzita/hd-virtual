@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <string>
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -28,6 +29,7 @@ class Util
 		char getChar(bitset<8>);
 		void formatByte(int, bitset<8>);
 		void printPropriedade(string);
+		string itos(int);
 		
 	private:
 };
