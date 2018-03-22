@@ -9,6 +9,8 @@ Bloco::Bloco()
 	
 	omitWar = false;
 	omitErr = false;
+	
+	setFlag(FLAG_NOME, true);
 }
 
 Bloco::~Bloco()
@@ -101,6 +103,37 @@ bitset<8> Bloco::getByte(int byte)
 		
 	return ret;
 }
+// ============= MEMORIA ============= //
+
+void Bloco::setMemoria(int value)
+{
+	char * s;
+	itoa(value, s, 4);
+	string str = s;
+	setDados(MP_BYTE, MP_SIZE, str);
+}
+
+int Bloco::getMemoria()
+{
+	return atoi(getDados(MP_BYTE, MP_SIZE).c_str());
+}
+
+// ============= FLAG ============= //
+void Bloco::setFlag(int bit, bool value)
+{
+	if(bit < 7)
+		setBit(FLAG_BIT + bit, value);
+	else
+	    if(omitErr == false)
+	        cout<<"ERRO(Bloco.setFlag)\n";
+}
+
+bool Bloco::getFlag(int bit)
+{
+	if(bit < 7)
+		return b[FLAG_BIT + bit];
+	return false;
+}
 
 
 // ============= NOME ============= //
@@ -135,10 +168,10 @@ void Bloco::setDados(int byte, const string value)
 	}
 	
 
-	for(int i = 0; i < maxByte; i++)
+	for(int i = 0; i <= maxByte; i++)
 		if(i < value.length())
 			setByte(byte++, value[i]);
-	setByte(byte, 0);
+	//setByte(byte, 0);
 }
 
 void Bloco::setDados(int byte, int maxSteps, string value) // maxSteps deve considerar o \0 (ex: nome pode ter até 26 caracteres, maxSteps = 27)
@@ -150,7 +183,7 @@ void Bloco::setDados(int byte, int maxSteps, string value) // maxSteps deve cons
 	setDados(byte, value);
 }
 
-void Bloco::setDados(string value)
+void Bloco::setAreaDados(string value)
 {
 	setDados(DADOS_BYTE, DADOS_SIZE, value);
 }
@@ -171,7 +204,7 @@ string Bloco::getDados(int byte, int steps)
 	return ret;
 }
 
-string Bloco::getDados()
+string Bloco::getAreaDados()
 {
 	return getDados(DADOS_BYTE, DADOS_SIZE);
 }

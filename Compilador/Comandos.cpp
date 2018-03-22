@@ -1,7 +1,7 @@
 #include <cstdlib>
-#include <string>
 #include <iostream>
 #include "Comandos.h"
+
 #include "../Classes/Util.h"
 
 using namespace std;
@@ -137,7 +137,16 @@ erro Comandos::validarComando(){
 						e.mensagem = "Informe o nome do hd";
 						e.status = true;
 					}
-					else cout << "Criar um hd com o nome: " << t.t2 << endl;
+					else{
+						split a = separar(t.t2);
+						erro e;
+						e = hd.createHD(a.t1, atoi(a.t2.c_str()));
+						if(!e.status){
+							cout << "HD " << a.t1 << " criado com sucesso (tamanho: " << atoi(a.t2.c_str()) * MAX_BYTE << " bytes)" << endl;
+						} else {
+							cout << "Erro: " << e.mensagem << endl;
+						}
+					}
 				}
 				else if(t.t1 == "-f"){
 					if(t.t2 == ""){
@@ -250,7 +259,7 @@ erro Comandos::validarComando(){
 			}
 		}
  		else if(getComando() == "df"){
-			cout << "Propriedade do hd\n";
+			hd.propriedadesHD();
 		}
 		else if(getComando() == "?"){
 			t = separar(getParametros());

@@ -5,8 +5,8 @@ CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
 RES      = 
-OBJ      = main.o Classes/Bloco.o Compilador/Comandos.o Classes/Util.o $(RES)
-LINKOBJ  = main.o Classes/Bloco.o Compilador/Comandos.o Classes/Util.o $(RES)
+OBJ      = main.o Classes/Bloco.o Compilador/Comandos.o Classes/Util.o Classes/HD.o $(RES)
+LINKOBJ  = main.o Classes/Bloco.o Compilador/Comandos.o Classes/Util.o Classes/HD.o $(RES)
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/lib" -L"C:/Program Files (x86)/Dev-Cpp/lib/gcc" -static-libstdc++ -static-libgcc  
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/include" 
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/include" 
@@ -37,3 +37,6 @@ Compilador/Comandos.o: Compilador/Comandos.cpp
 
 Classes/Util.o: Classes/Util.cpp
 	$(CPP) -c Classes/Util.cpp -o Classes/Util.o $(CXXFLAGS)
+
+Classes/HD.o: Classes/HD.cpp
+	$(CPP) -c Classes/HD.cpp -o Classes/HD.o $(CXXFLAGS)

@@ -20,6 +20,10 @@
 #define DADOS_BYTE 32
 #define MAX_BYTE 128
 
+#define FLAG_OCUPADO 0
+#define FLAG_NOME 1
+
+
 using namespace std;
 
 class Bloco
@@ -44,22 +48,32 @@ class Bloco
 		void printAll();
 		
 		
+		//MEMORIA
+		void setMemoria(int);
+		int getMemoria();
+		
+		//FLAGS
+		void setFlag(int, bool);
+		bool getFlag(int);
+		
 		//NOME
 		void setNome(const char*);
 		void getNome(char[27]);
 		string getNome();
 		
 		
-		//DADOS
-		void setDados(const string); //set nos bytes de dados
-		void setDados(int, const string);
-		void setDados(int, int, string);
+		//AREA DADOS
+		void setAreaDados(const string); //set nos bytes de dados
+		string getAreaDados();//set nos bytes de dados
 		
-		string getDados();//set nos bytes de dados
+		//DADOS
+		void setDados(int, int, string);
+		void setDados(int, const string);
+		
 		string getDados(int, int);
 		
 	private:
-		bitset<128*8> b;
+		bitset<MAX_BYTE*8> b;
 		
 		bool omitBWar; //avisos base set/get bit/byte
 		bool omitBErr; //err base set/get bit/byte

@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <string>
 #include "../Classes/Util.h"
+#include "../Classes/HD.h"
 
 using namespace std;
 
@@ -17,6 +18,7 @@ class Comandos{
 		string parametro;
 		string comandoCompleto;
 		split separar(string);
+		HD hd;
 		
 	public:
 	

@@ -43,5 +43,3 @@ void Util::formatByte(int byte, bitset<8> b)
 
 
 
-
-

@@ -4,6 +4,8 @@
 #include <bitset>
 #include <cmath>
 #include <cstring>
+#include <cstdlib>
+#include <string>
 #include <iostream>
 
 using namespace std;
@@ -25,6 +27,8 @@ class Util
 		~Util();
 		char getChar(bitset<8>);
 		void formatByte(int, bitset<8>);
+		void printPropriedade(string);
+		
 	private:
 };
 
