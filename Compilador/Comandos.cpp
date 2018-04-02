@@ -93,28 +93,30 @@ erro Comandos::validarComando(){
 	t.t2.clear();
 	
 	if(getComando()[getComando().size() - 1] == ':'){
-        nomeHD = getComando()[getComando().size() - 1];
-        
-	}
-	
-	if(e0()){
-        if(getComando() == "clear") system("cls");
-		else if(getComando() == "create") create();
-		else if(getComando() == "remove") remove();
-		else if(getComando() == "format") format();
-		else if(getComando() == "move") move();
-		else if(getComando() == "df") df();
-		else if(getComando() == "cat") cat();
- 		else if(getComando() == "cd") cd();
-		else if(getComando() == "ls") ls();
-		else if(getComando() == "?") help();
+        nomeHD = getComando();
+        nomeHD.resize(nomeHD.size() -1);
+        hd.openHD(nomeHD);
 	}
 	else{
-		e.status = true;
-		for(int i = 0; i < n - 1; i++){
-			e.mensagem += "_";
+		if(e0()){
+	        if(getComando() == "clear") system("cls");
+			else if(getComando() == "create") create();
+			else if(getComando() == "remove") remove();
+			else if(getComando() == "format") format();
+			else if(getComando() == "move") move();
+			else if(getComando() == "df") df();
+			else if(getComando() == "cat") cat();
+	 		else if(getComando() == "cd") cd();
+			else if(getComando() == "ls") ls();
+			else if(getComando() == "?") help();
 		}
-		e.mensagem += "^";
+		else{
+			e.status = true;
+			for(int i = 0; i < n - 1; i++){
+				e.mensagem += "_";
+			}
+			e.mensagem += "^";
+		}
 	}
 	
 	return e;
@@ -139,12 +141,17 @@ void Comandos::create(){
 			}
 			else{
 				split a = separar(t.t2);
-				erro e;
-				e = hd.createHD(a.t1, atoi(a.t2.c_str()));
-				if(!e.status){
-					cout << "HD " << a.t1 << " criado com sucesso (tamanho: " << atoi(a.t2.c_str()) * MAX_BYTE << " bytes)" << endl;
+				if(a.t2 == ""){
+					e.mensagem = "Informe o tamanho do hd";
+					e.status = true;
 				} else {
-					cout << "Erro: " << e.mensagem << endl;
+					erro e;
+					e = hd.createHD(a.t1, atoi(a.t2.c_str()));
+					if(!e.status){
+						cout << "HD " << a.t1 << " criado com sucesso (tamanho: " << atoi(a.t2.c_str()) * MAX_BYTE << " bytes)" << endl;
+					} else {
+						cout << "Erro: " << e.mensagem << endl;
+					}
 				}
 			}
 		}
@@ -154,6 +161,8 @@ void Comandos::create(){
 				e.status = true;
 			}
 			else cout << "Criar um arquivo com o nome: " << t.t2 << endl;
+			
+			
 		}
 		else if(t.t1 == "-d"){
 	        if(t.t2 == ""){

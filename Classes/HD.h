@@ -27,7 +27,8 @@ class HD
 		erro createHD(string, int);
 		void headHD();
 		
-		void openHD(string);
+		erro openHD(string);
+		erro carregaHD();
 		
 		void propriedadesHD(string *);
 		

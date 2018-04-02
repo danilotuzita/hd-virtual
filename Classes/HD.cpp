@@ -7,6 +7,7 @@ HD::HD()
 
 HD::~HD()
 {
+	cout<<"fechando arq"<<endl;
     for(int i = 0; i < TAM; i++){
 		string temp = hd[i].getDados(0, MAX_BYTE);
 		fwrite(temp.c_str(), MAX_BYTE, 1, fp);
@@ -59,20 +60,64 @@ void HD::propriedadesHD(string * mensagem){
 
 }
 
-// TERMINAR
 erro HD::openHD(string nomeHD){
 
-	erro e;
+ 	erro e;
 	e.status = false;
 	e.mensagem.clear();
-	
+
+    cout<<"abrindo: "<<nomeHD<<endl;
+
+	nome = nomeHD;
+
 	nomeHD += ".hd";
-	
-	fp = fopen (nomeHD.c_str(), "wb");
-	
-	
+
+	cout<<"abrindo: "<<nomeHD<<endl;
+
+	fp = fopen (nomeHD.c_str(), "rb");
+
 	if (fp==NULL) {
 		e.status = true;
 		e.mensagem = "Nao foi possivel abrir o HD selecionado";
+		return e;
 	}
+
+	carregaHD();
+	
+	fclose(fp);
+	fp = fopen (nomeHD.c_str(), "wb");
+
+	return e;
+	
+}
+
+erro HD::carregaHD(){
+
+    erro e;
+    Util u;
+	char buffer;
+	Bloco bloco;
+    hd.clear();
+
+	for(int i = 0; i < MAX_BYTE; i++)
+	{
+		fread (&buffer, 1, 1, fp);
+		bloco.setByte(i, buffer);
+	}
+	TAM = atoi(bloco.getDados(BYTE_HEADER_TAMANHO, SIZE_HEADER_TAMANHO).c_str());
+	hd.resize(TAM);
+	bloco.setFlag(FLAG_OCUPADO, true);
+	hd[0] = bloco;
+	
+	for(int j = 1; j < TAM; j++) //iterando os blocos
+	{
+        for(int i = 0; i < MAX_BYTE; i++) //lendo 1 Bloco
+		{
+			fread (&buffer, 1, 1, fp);
+			bloco.setByte(i, buffer);
+		}
+		hd[j] = bloco;
+	}
+	
+	return e;
 }

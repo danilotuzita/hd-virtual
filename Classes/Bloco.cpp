@@ -18,6 +18,24 @@ Bloco::~Bloco()
 }
 
 // ============= UTILS ============= //
+//void Bloco::printByteMin(int byte)
+//{
+//	if(byte >= MAX_BYTE)
+//		return;
+//	Util u;
+//	bitset<8> bs;
+//
+//	for(int i = 0; i < 8; i++)
+//		bs[i] = getBit(byte * 8 + i);
+//
+//	u.formatByte(byte, bs);
+//}
+//
+//void Bloco::printAllMin()
+//{
+//
+//}
+
 void Bloco::printByte(int byte)
 {
 	if(byte >= MAX_BYTE)

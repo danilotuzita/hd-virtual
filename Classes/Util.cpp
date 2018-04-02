@@ -8,6 +8,16 @@ Util::~Util()
 {
 }
 
+char Util::getChar(bitset<1024> b, int byte)
+{
+	int bitS = byte * 8;
+	char ret = 0;
+	for(int i = bitS; i < bitS + 8; i++)
+		ret += b[i] * pow(2, i);
+
+	return ret;
+}
+
 char Util::getChar(bitset<8> b)
 {
 	char ret = 0;
@@ -47,6 +57,7 @@ std::string Util::itos(int number)
      ss << number;
      return ss.str();
 }
+
 
 
 

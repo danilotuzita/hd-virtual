@@ -27,6 +27,7 @@ class Util
 		Util();
 		~Util();
 		char getChar(bitset<8>);
+		char getChar(bitset<1024>, int);
 		void formatByte(int, bitset<8>);
 		void printPropriedade(string);
 		string itos(int);
