@@ -59,6 +59,22 @@ std::string Util::itos(int number)
 }
 
 
+string Util::itob(int num)
+{
+	stringstream ss;
+
+	// the number is converted to string with the help of stringstream
+	ss << num;
+	string ret;
+	ss >> ret;
+
+	// Append zero chars
+	int str_length = ret.length();
+	for (int i = 0; i < 4 - str_length; i++)
+		ret = "0" + ret;
+	return ret;
+}
+
 
 
 

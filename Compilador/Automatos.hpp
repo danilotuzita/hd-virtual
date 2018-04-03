@@ -1,4 +1,3 @@
-
 bool e0();
 bool e1();
 bool e2();

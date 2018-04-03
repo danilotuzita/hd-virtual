@@ -3,11 +3,13 @@
 
 HD::HD()
 {
+	ultimoBlocoLivre = 0;
+	localAtual = POS_RAIZ;
 }
 
 HD::~HD()
 {
-	cout<<"fechando arq"<<endl;
+	//cout<<"fechando arq"<<endl;
     for(int i = 0; i < TAM; i++){
 		string temp = hd[i].getDados(0, MAX_BYTE);
 		fwrite(temp.c_str(), MAX_BYTE, 1, fp);
@@ -39,7 +41,8 @@ erro HD::createHD(string n, int t)
 	    hd[i] = base;
 
     headHD();
-
+    raizHD();
+    
 	e.status = false;
 	return e;
 }
@@ -50,6 +53,24 @@ void HD::headHD(){
 	string s = u.itos(TAM);
 	base.setDados(BYTE_HEADER_TAMANHO, SIZE_HEADER_TAMANHO, s);
 	hd[POS_HEADER] = base;
+}
+
+void HD::raizHD(){
+
+	Bloco raiz;
+
+	raiz.setMemoria(0);
+
+	raiz.setFlag(FLAG_OCUPADO, true);
+	raiz.setFlag(FLAG_NOME, true);
+	raiz.setFlag(FLAG_TIPO, true);
+
+	char nome[27] = "c:";
+	raiz.setNome(nome);
+	
+	raiz.setAreaDados("");
+	
+	hd[POS_RAIZ] = raiz;
 }
 
 void HD::propriedadesHD(string * mensagem){
@@ -66,13 +87,13 @@ erro HD::openHD(string nomeHD){
 	e.status = false;
 	e.mensagem.clear();
 
-    cout<<"abrindo: "<<nomeHD<<endl;
+    //cout<<"abrindo: "<<nomeHD<<endl;
 
 	nome = nomeHD;
 
 	nomeHD += ".hd";
 
-	cout<<"abrindo: "<<nomeHD<<endl;
+	//cout<<"abrindo: "<<nomeHD<<endl;
 
 	fp = fopen (nomeHD.c_str(), "rb");
 
@@ -104,8 +125,10 @@ erro HD::carregaHD(){
 		fread (&buffer, 1, 1, fp);
 		bloco.setByte(i, buffer);
 	}
+
 	TAM = atoi(bloco.getDados(BYTE_HEADER_TAMANHO, SIZE_HEADER_TAMANHO).c_str());
 	hd.resize(TAM);
+
 	bloco.setFlag(FLAG_OCUPADO, true);
 	hd[0] = bloco;
 	
@@ -116,8 +139,67 @@ erro HD::carregaHD(){
 			fread (&buffer, 1, 1, fp);
 			bloco.setByte(i, buffer);
 		}
+
 		hd[j] = bloco;
+		
+		if(!hd[j].getFlag(FLAG_OCUPADO) && ultimoBlocoLivre == 0)
+		{
+            ultimoBlocoLivre = j;
+		}
+		else if(hd[j].getFlag(FLAG_OCUPADO) && ultimoBlocoLivre == (j - 1) && (j - 1) != 0)
+		{
+            blocosLivres.push(ultimoBlocoLivre);
+            ultimoBlocoLivre = 0;
+		}
 	}
 	
 	return e;
+}
+
+erro HD::criarArquivo(string nome, string conteudo){
+
+	erro e;
+	Util u;
+
+	e.status = false;
+	e.mensagem.clear();
+	
+	int pos;
+	int prox = ultimoBlocoLivre;
+
+	if(blocosLivres.empty())
+	{
+		pos = ultimoBlocoLivre;
+		prox++;
+	} 
+	else
+	{
+        pos = blocosLivres.front();
+        blocosLivres.pop();
+	}
+
+    hd[pos].setMemoria(0);
+    
+    hd[pos].setFlag(FLAG_OCUPADO, true);
+	hd[pos].setFlag(FLAG_NOME, true);
+	hd[pos].setFlag(FLAG_TIPO, false);
+	
+	hd[pos].setNome(nome.c_str());
+	
+	hd[pos].setAreaDados(conteudo);
+
+	string areaDados = hd[localAtual].getAreaDados();
+
+	int i;
+	for(i = 0; areaDados[i] != 0; i++);
+	areaDados.resize(i);
+
+    areaDados += u.itob(pos);
+
+    hd[localAtual].setAreaDados(areaDados);
+
+    ultimoBlocoLivre = prox;
+
+	return e;
+
 }

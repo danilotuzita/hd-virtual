@@ -125,10 +125,8 @@ bitset<8> Bloco::getByte(int byte)
 
 void Bloco::setMemoria(int value)
 {
-	char * s;
-	itoa(value, s, 4);
-	string str = s;
-	setDados(MP_BYTE, MP_SIZE, str);
+    Util u;
+	setDados(MP_BYTE, MP_SIZE, u.itos(value));
 }
 
 int Bloco::getMemoria()

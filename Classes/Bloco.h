@@ -22,7 +22,7 @@
 
 #define FLAG_OCUPADO 0
 #define FLAG_NOME 1
-
+#define FLAG_TIPO 2
 
 using namespace std;
 

@@ -1,6 +1,7 @@
 #include <vector>
 #include <stdio.h>
 #include <sstream>
+#include <queue>
 
 #ifndef HD_H
 #define HD_H
@@ -17,6 +18,7 @@
 #define SIZE_HEADER_TAMANHO 4
 
 #define POS_HEADER 0
+#define POS_RAIZ 1
 
 class HD
 {
@@ -25,12 +27,13 @@ class HD
 		~HD();
 		
 		erro createHD(string, int);
-		void headHD();
 		
 		erro openHD(string);
 		erro carregaHD();
 		
 		void propriedadesHD(string *);
+		
+		erro criarArquivo(string, string);
 		
 	private:
 		vector<Bloco> hd;
@@ -38,6 +41,14 @@ class HD
 		FILE* fp;
 		int TAM;
 		Util u;
+		
+		int localAtual;
+		
+		int ultimoBlocoLivre;
+		queue<int> blocosLivres;
+		
+		void headHD();
+		void raizHD();
 };
 
 
