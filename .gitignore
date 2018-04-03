@@ -1,4 +1,9 @@
-*.o
+*
+.o
+
 .git
+
 .gitigone
+
 .hd
+.exe
