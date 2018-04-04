@@ -19,7 +19,7 @@ class Comandos{
 		string parametro;
 		string comandoCompleto;
 
-		HD hd;
+		HD * hd;
 		string nomeHD;
 		
 		bool validarParametros(int cod_comando, string parametros);
@@ -41,6 +41,7 @@ class Comandos{
 	public:
 	
 		Comandos(string _comando = "");
+		~Comandos();
 		void setComando(string _comando);
 		void removeEspacosComeco();
 		string getComandoCompleto();

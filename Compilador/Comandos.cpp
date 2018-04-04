@@ -5,6 +5,16 @@
 
 using namespace std;
 
+Comandos::Comandos(string _comando){
+	hd = new HD;
+	nomeHD.clear();
+	setComando(_comando);
+}
+
+Comandos::~Comandos(){
+	delete hd;
+}
+
 void Comandos::separarComando(){
 	
 	int i;
@@ -49,11 +59,6 @@ void Comandos::setComando(string _comando){
 	separarComando();
 }
 
-Comandos::Comandos(string _comando){
-	nomeHD.clear();
-	setComando(_comando);
-}
-
 string Comandos::getComandoCompleto(){
 	return comandoCompleto;
 }
@@ -96,7 +101,9 @@ erro Comandos::validarComando(){
 	if(getComando()[getComando().size() - 1] == ':'){
         nomeHD = getComando();
         nomeHD.resize(nomeHD.size() -1);
-        hd.openHD(nomeHD);
+        delete hd;
+        hd = new HD;
+        hd->openHD(nomeHD);
 	}
 	else{
 		if(e0()){
@@ -147,7 +154,7 @@ void Comandos::create(){
 					e.status = true;
 				} else {
 					erro e;
-					e = hd.createHD(a.t1, atoi(a.t2.c_str()));
+					e = hd->createHD(a.t1, atoi(a.t2.c_str()));
 					if(!e.status){
 						cout << "HD " << a.t1 << " criado com sucesso (tamanho: " << atoi(a.t2.c_str()) * MAX_BYTE << " bytes)" << endl;
 					} else {
@@ -165,7 +172,7 @@ void Comandos::create(){
                 string linha = "";
                 linha.clear();
 				getline(cin, linha);
-                e = hd.criarArquivo(t.t2, linha);
+                e = hd->criarArquivo(t.t2, linha);
 				if(!e.status){
 					cout << "Arquivo " << t.t2 << " gravado com sucesso!" << endl;
 				} else {
@@ -178,7 +185,14 @@ void Comandos::create(){
 				e.mensagem = "Informe o nome da pasta";
 				e.status = true;
 			}
-			else cout << "Criar uma pasta com o nome: " << t.t2 << endl;
+			else {
+                e = hd->criarPasta(t.t2);
+				if(!e.status){
+					cout << "Pasta " << t.t2 << " criada com sucesso!" << endl;
+				} else {
+					cout << "Erro: " << e.mensagem << endl;
+				}				
+			}
 		}
 		else{
 			cout << "Comando para criacao de coisas no hd e bla bla bla bla \n";
@@ -267,7 +281,7 @@ void Comandos::move(){
 
 void Comandos::df(){
 	string mensagem[10];
-	hd.propriedadesHD(mensagem);
+	hd->propriedadesHD(mensagem);
 	for(n = 0; n < 2; n++){
 		cout << mensagem[n] << endl;
 	}

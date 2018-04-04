@@ -10,12 +10,14 @@ HD::HD()
 HD::~HD()
 {
 	//cout<<"fechando arq"<<endl;
-    for(int i = 0; i < TAM; i++){
-		string temp = hd[i].getDados(0, MAX_BYTE);
-		fwrite(temp.c_str(), MAX_BYTE, 1, fp);
+	if (fp != NULL) {
+	    for(int i = 0; i < TAM; i++){
+			string temp = hd[i].getDados(0, MAX_BYTE);
+			fwrite(temp.c_str(), MAX_BYTE, 1, fp);
+		}
+	
+		fclose(fp);
 	}
-
-	fclose(fp);
 }
 
 erro HD::createHD(string n, int t)
@@ -157,6 +159,14 @@ erro HD::carregaHD(){
 }
 
 erro HD::criarArquivo(string nome, string conteudo){
+	return criarConteudo(nome, conteudo, false);
+}
+
+erro HD::criarPasta(string nome){
+	return criarConteudo(nome, "", true);
+}
+
+erro HD::criarConteudo(string nome, string conteudo, bool tipo){
 
 	erro e;
 	Util u;
@@ -182,7 +192,7 @@ erro HD::criarArquivo(string nome, string conteudo){
     
     hd[pos].setFlag(FLAG_OCUPADO, true);
 	hd[pos].setFlag(FLAG_NOME, true);
-	hd[pos].setFlag(FLAG_TIPO, false);
+	hd[pos].setFlag(FLAG_TIPO, tipo);
 	
 	hd[pos].setNome(nome.c_str());
 	
@@ -201,5 +211,4 @@ erro HD::criarArquivo(string nome, string conteudo){
     ultimoBlocoLivre = prox;
 
 	return e;
-
 }

@@ -34,6 +34,7 @@ class HD
 		void propriedadesHD(string *);
 		
 		erro criarArquivo(string, string);
+		erro criarPasta(string);
 		
 	private:
 		vector<Bloco> hd;
@@ -49,6 +50,7 @@ class HD
 		
 		void headHD();
 		void raizHD();
+		erro criarConteudo(string, string, bool);
 };
 
 
