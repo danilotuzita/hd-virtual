@@ -10,11 +10,12 @@
 #include "Util.h"
 
 #define _128MB 1048576
+#define _1KB 1024
 
 #define BYTE_HEADER_NOME 0
-#define SIZE_HEADER_NOME 64
+#define SIZE_HEADER_NOME (MAX_BYTE / 2)
 
-#define BYTE_HEADER_TAMANHO 64
+#define BYTE_HEADER_TAMANHO (MAX_BYTE / 2)
 #define SIZE_HEADER_TAMANHO 4
 
 #define POS_HEADER 0
@@ -26,15 +27,33 @@ class HD
 		HD();
 		~HD();
 		
+		// BASE
 		erro createHD(string, int);
-		
 		erro openHD(string);
 		erro carregaHD();
 		
-		void propriedadesHD(string *);
+		// ARQUIVOS
+		int getFreeBlock();
+		string getNome(unsigned int);
+		bool getTipo(unsigned int);
 		
-		erro criarArquivo(string, string);
-		erro criarPasta(string);
+			// arquivo
+			int criaArquivo(string, string);
+			string leArquivo(unsigned int);
+			
+			// pasta
+			int criaPasta(string);
+			void addPasta(unsigned int);
+			void addPasta(unsigned int, unsigned int);
+			queue<unsigned int> abrePasta(unsigned int);
+		
+//		erro criarArquivo(string, string); //retirei essas funções pq eu não soube como
+//		erro criarPasta(string); // trabalhar em cima delas
+		
+		// UTIL
+		void print(int);
+		void printChain(int);
+		void propriedadesHD(string *);
 		
 	private:
 		vector<Bloco> hd;

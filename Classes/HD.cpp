@@ -1,9 +1,8 @@
 #include "HD.h"
-#include "Util.h"
 
 HD::HD()
 {
-	ultimoBlocoLivre = 0;
+	ultimoBlocoLivre = 1;
 	localAtual = POS_RAIZ;
 }
 
@@ -12,7 +11,7 @@ HD::~HD()
 	//cout<<"fechando arq"<<endl;
 	if (fp != NULL) {
 	    for(int i = 0; i < TAM; i++){
-			string temp = hd[i].getDados(0, MAX_BYTE);
+			string temp = hd[i].getString(0, MAX_BYTE);
 			fwrite(temp.c_str(), MAX_BYTE, 1, fp);
 		}
 	
@@ -26,7 +25,7 @@ erro HD::createHD(string n, int t)
 	n += ".hd";
 
 	fp = fopen(n.c_str(), "wb");
-	TAM = (t * 1024) / MAX_BYTE;
+	TAM = (t * _1KB) / MAX_BYTE;
 	
 	erro e;
 	e.status = true;
@@ -51,9 +50,8 @@ erro HD::createHD(string n, int t)
 
 void HD::headHD(){
 	Bloco base;
-	base.setDados(BYTE_HEADER_NOME, SIZE_HEADER_NOME, nome);
-	string s = u.itos(TAM);
-	base.setDados(BYTE_HEADER_TAMANHO, SIZE_HEADER_TAMANHO, s);
+	base.setString(BYTE_HEADER_NOME, SIZE_HEADER_NOME, nome);
+	base.setInt(BYTE_HEADER_TAMANHO, TAM);
 	hd[POS_HEADER] = base;
 }
 
@@ -70,16 +68,16 @@ void HD::raizHD(){
 	char nome[27] = "c:";
 	raiz.setNome(nome);
 	
-	raiz.setAreaDados("");
+	raiz.setDados("");
 	
 	hd[POS_RAIZ] = raiz;
 }
 
 void HD::propriedadesHD(string * mensagem){
 
-	mensagem[0] = "Nome: " + hd[POS_HEADER].getDados(BYTE_HEADER_NOME, SIZE_HEADER_NOME);
-	int temp_tam = (atoi(hd[POS_HEADER].getDados(BYTE_HEADER_TAMANHO, SIZE_HEADER_TAMANHO).c_str()) * MAX_BYTE) / 1024;
-	mensagem[1] = "Tamanho: " + u.itos(temp_tam) + "kb";
+	Util u; 
+	mensagem[0] = "Nome: " + hd[POS_HEADER].getString(BYTE_HEADER_NOME, SIZE_HEADER_NOME);
+	mensagem[1] = "Tamanho: " + u.itos((int)hd[POS_HEADER].getInt(BYTE_HEADER_TAMANHO)) + "kb";
 
 }
 
@@ -97,7 +95,7 @@ erro HD::openHD(string nomeHD){
 
 	//cout<<"abrindo: "<<nomeHD<<endl;
 
-	fp = fopen (nomeHD.c_str(), "rb");
+	fp = fopen(nomeHD.c_str(), "rb");
 
 	if (fp==NULL) {
 		e.status = true;
@@ -108,7 +106,7 @@ erro HD::openHD(string nomeHD){
 	carregaHD();
 	
 	fclose(fp);
-	fp = fopen (nomeHD.c_str(), "wb");
+	fp = fopen(nomeHD.c_str(), "wb");
 
 	return e;
 	
@@ -128,27 +126,27 @@ erro HD::carregaHD(){
 		bloco.setByte(i, buffer);
 	}
 
-	TAM = atoi(bloco.getDados(BYTE_HEADER_TAMANHO, SIZE_HEADER_TAMANHO).c_str());
+	TAM = bloco.getInt(BYTE_HEADER_TAMANHO);
 	hd.resize(TAM);
 
-	bloco.setFlag(FLAG_OCUPADO, true);
+	//bloco.setFlag(FLAG_OCUPADO, true);
 	hd[0] = bloco;
 	
 	for(int j = 1; j < TAM; j++) //iterando os blocos
 	{
         for(int i = 0; i < MAX_BYTE; i++) //lendo 1 Bloco
 		{
-			fread (&buffer, 1, 1, fp);
+			fread(&buffer, 1, 1, fp);
 			bloco.setByte(i, buffer);
 		}
 
 		hd[j] = bloco;
 		
-		if(!hd[j].getFlag(FLAG_OCUPADO) && ultimoBlocoLivre == 0)
+		if(hd[j].isFree() && ultimoBlocoLivre == 0)
 		{
             ultimoBlocoLivre = j;
 		}
-		else if(hd[j].getFlag(FLAG_OCUPADO) && ultimoBlocoLivre == (j - 1) && (j - 1) != 0)
+		else if(!hd[j].isFree() && ultimoBlocoLivre == (j - 1) && (j - 1) != 0)
 		{
             blocosLivres.push(ultimoBlocoLivre);
             ultimoBlocoLivre = 0;
@@ -158,57 +156,197 @@ erro HD::carregaHD(){
 	return e;
 }
 
-erro HD::criarArquivo(string nome, string conteudo){
-	return criarConteudo(nome, conteudo, false);
-}
-
-erro HD::criarPasta(string nome){
-	return criarConteudo(nome, "", true);
-}
-
-erro HD::criarConteudo(string nome, string conteudo, bool tipo){
-
-	erro e;
-	Util u;
-
-	e.status = false;
-	e.mensagem.clear();
-	
-	int pos;
-	int prox = ultimoBlocoLivre;
-
-	if(blocosLivres.empty())
-	{
-		pos = ultimoBlocoLivre;
-		prox++;
-	} 
-	else
-	{
-        pos = blocosLivres.front();
-        blocosLivres.pop();
-	}
-
-    hd[pos].setMemoria(0);
-    
-    hd[pos].setFlag(FLAG_OCUPADO, true);
-	hd[pos].setFlag(FLAG_NOME, true);
-	hd[pos].setFlag(FLAG_TIPO, tipo);
-	
-	hd[pos].setNome(nome.c_str());
-	
-	hd[pos].setAreaDados(conteudo);
-
-	string areaDados = hd[localAtual].getAreaDados();
-
+int HD::getFreeBlock()
+{
 	int i;
-	for(i = 0; areaDados[i] != 0; i++);
-	areaDados.resize(i);
+	
+	if(blocosLivres.empty())
+		if(ultimoBlocoLivre > TAM)
+			return -1;
+		else
+			return ultimoBlocoLivre++;
 
-    areaDados += u.itob(pos);
-
-    hd[localAtual].setAreaDados(areaDados);
-
-    ultimoBlocoLivre = prox;
-
-	return e;
+	i = blocosLivres.front();
+	blocosLivres.pop();
+	return i;
 }
+
+int HD::criaArquivo(string nome, string dados)
+{
+	int i = getFreeBlock();
+	int primeiroBloco = i;
+	if(i == -1)
+			return -1; // HD ESTÁ SEM ESPAÇO
+	
+	cout<<NOME_SIZE + DADOS_SIZE<<": ";
+	while(dados.size())
+	{
+		if(nome.size())
+		{
+			hd[i].setNome(nome);
+			hd[i].setFlag(FLAG_NOME, true);
+			nome = "";
+		}
+		
+		hd[i].setFlag(FLAG_OCUPADO, true);
+		hd[i].setFlag(FLAG_TIPO, TIPO_ARQUIVO);
+		dados = hd[i].setDados(dados);
+		
+		int next = getFreeBlock();
+		if(next == -1)
+			return -1; // HD ESTÁ SEM ESPAÇO
+		
+		hd[i].setMemoria(next); // o bloco atual aponta para o proximo bloco livre
+		i = next;
+	}
+	cout<<endl;
+	
+	return primeiroBloco;
+}
+
+string HD::leArquivo(unsigned int pos)
+{
+	if(pos > TAM || !hd[pos].temNome() || hd[pos].isFree())
+		return "";
+	
+	string retorno = "";
+	
+	int next = pos;
+	do
+	{
+		retorno += hd[next].getDados();
+		next = hd[next].getMemoria();
+	}while(next);
+	
+	return retorno;
+}
+
+int HD::criaPasta(string nome)
+{
+	int i = getFreeBlock();
+	if(i == -1)
+		return -1;
+	
+	hd[i].setFlag(FLAG_NOME, true);
+	hd[i].setFlag(FLAG_OCUPADO, true);
+	hd[i].setFlag(FLAG_TIPO, TIPO_PASTA);
+	hd[i].setNome(nome);
+	
+	return i;
+}
+
+void HD::addPasta(unsigned int pai, unsigned int filho)
+{
+	if(hd[pai].isFolder())
+		hd[pai].setInt(hd[pai].getFreeSpace(), filho);
+}
+
+queue<unsigned int> HD::abrePasta(unsigned int pai)
+{
+	queue<unsigned int> pastas;
+	
+	do
+	{
+		int i;
+		if(hd[pai].temNome())
+			i = DADOS_BYTE;
+		else
+			i = NOME_BYTE;
+		
+		for(; i < MAX_BYTE; i += 4)
+		{
+			unsigned int temp = hd[pai].getInt(i);
+			if(temp)
+				pastas.push(temp);
+		}
+		
+		pai = hd[pai].getInt(MP_BYTE);
+	}while(hd[pai].getMemoria() && pai);
+	
+	return pastas;
+}
+
+void HD::print(int bloco)
+{
+	hd[bloco].printAll();
+}
+
+void HD::printChain(int pos)
+{
+	if(pos > TAM || !hd[pos].temNome() || hd[pos].isFree())
+		return ;
+	
+	int next = pos;
+	do
+	{
+		hd[next].printBloco();
+		cout<<endl;
+		next = hd[next].getMemoria();
+	}while(next);
+}
+
+string HD::getNome(unsigned int pos)
+{
+	return hd[pos].getNome();
+}
+
+bool HD::getTipo(unsigned int pos)
+{
+	return hd[pos].isFolder();
+}
+
+//erro HD::criarArquivo(string nome, string conteudo){
+//	return criarConteudo(nome, conteudo, false);
+//}
+//
+//erro HD::criarPasta(string nome){
+//	return criarConteudo(nome, "", true);
+//}
+//
+//erro HD::criarConteudo(string nome, string conteudo, bool tipo){
+//
+//	erro e;
+//	Util u;
+//
+//	e.status = false;
+//	e.mensagem.clear();
+//	
+//	int pos;
+//	int prox = ultimoBlocoLivre;
+//
+//	if(blocosLivres.empty()) // se não tem buraco
+//	{
+//		pos = ultimoBlocoLivre;
+//		prox++;
+//	} 
+//	else
+//	{
+//        pos = blocosLivres.front();
+//        blocosLivres.pop();
+//	}
+//
+//    hd[pos].setMemoria(0);
+//    
+//    hd[pos].setFlag(FLAG_OCUPADO, true);
+//	hd[pos].setFlag(FLAG_NOME, true);
+//	hd[pos].setFlag(FLAG_TIPO, tipo);
+//	
+//	hd[pos].setNome(nome.c_str());
+//	
+//	hd[pos].setDados(conteudo);
+//
+//	string areaDados = hd[localAtual].getDados();
+//
+//	int i;
+//	for(i = 0; areaDados[i] != 0; i++);
+//	areaDados.resize(i);
+//
+//    areaDados += u.itob(pos);
+//
+//    hd[localAtual].setDados(areaDados);
+//
+//    ultimoBlocoLivre = prox;
+//
+//	return e;
+//}
+

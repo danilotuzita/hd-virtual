@@ -2,40 +2,19 @@
 
 Bloco::Bloco()
 {
-//	for(int i = 0; i < MAX_BIT; i++)
-//		setBit(i , false);
-	omitBWar = false;
+	bool cale_a_boca = true;
+	omitBWar = cale_a_boca;
 	omitBErr = false;
 	
-	omitWar = false;
+	omitWar = cale_a_boca;
 	omitErr = false;
-	
-	setFlag(FLAG_NOME, true);
 }
 
 Bloco::~Bloco()
 {
 }
 
-// ============= UTILS ============= //
-//void Bloco::printByteMin(int byte)
-//{
-//	if(byte >= MAX_BYTE)
-//		return;
-//	Util u;
-//	bitset<8> bs;
-//
-//	for(int i = 0; i < 8; i++)
-//		bs[i] = getBit(byte * 8 + i);
-//
-//	u.formatByte(byte, bs);
-//}
-//
-//void Bloco::printAllMin()
-//{
-//
-//}
-
+// UTILS
 void Bloco::printByte(int byte)
 {
 	if(byte >= MAX_BYTE)
@@ -60,15 +39,37 @@ void Bloco::printAll()
 	
 	for(int byte = 0; byte < MAX_BYTE; byte++)
 	{
-		if(byte == 4 || byte == 5 || byte == 32)
+		if(byte == FLAG_BYTE || byte == NOME_BYTE || byte == DADOS_BYTE)
 			cout<<"--------\n";
 		
 		printByte(byte);
 	}
 }
 
+void Bloco::printBloco()
+{
+	Util u;
+	cout<<"HEX: ";
+	for(int byte = 0; byte < MAX_BYTE; byte++)
+	{
+		if(byte == FLAG_BYTE || byte == NOME_BYTE || (byte == DADOS_BYTE) && temNome())
+			cout<<" | ";
+		
+		u.printHex(getByte(byte));
+	}
+	cout<<"\nCHR: ";
+	for(int byte = 0; byte < MAX_BYTE; byte++)
+	{
+		if(byte == FLAG_BYTE || byte == NOME_BYTE || (byte == DADOS_BYTE) && temNome())
+			cout<<" | ";
 
-// ============= BIT ============= //
+		u.printChar(getByte(byte));
+	}
+		
+	cout<<endl;
+}
+
+// BIT
 bool Bloco::setBit(int bit, bool value)
 {
 	if(bit >= MAX_BIT)
@@ -93,12 +94,12 @@ bool Bloco::getBit(int bit)
 }
 
 
-// ============= BYTE ============= //
+// BYTE
 void Bloco::setByte(int byte, char value)
 {
 	bool bit;
 	int byte_bit = byte * 8;
-	
+		
 	for(int i = 0; i < 8; i++)
 	{
 		bit = value % 2;
@@ -121,20 +122,110 @@ bitset<8> Bloco::getByte(int byte)
 		
 	return ret;
 }
-// ============= MEMORIA ============= //
 
+
+// DADOS
+// STR
+void Bloco::setString(int byte, const string value)
+{
+	int maxByte = byte + value.length();
+	if(maxByte > MAX_BYTE)
+	{
+		if(omitWar == false)
+			cout<<"ERRO(Bloco.setString): IMPOSSIVEL SETAR ESSE VALOR NAS POSICOES "<<byte<<" a "<<maxByte<<" - OVERFLOW BYTE MAXIMO: "<<MAX_BYTE - 1<<"\n";
+		return;
+	}
+	
+
+	for(int i = 0; i <= maxByte; i++)
+		if(i < value.length())
+			setByte(byte++, value[i]);
+}
+
+string Bloco::setString(int byte, int maxSteps, string value) // maxSteps deve considerar o \0 (ex: nome pode ter até 26 caracteres, maxSteps = 27)
+{
+	if(value.length() > maxSteps && omitWar == false) // length não considera o \0
+		cout<<"AVISO(Bloco.setString): TAMANHO DA STRING E MAIOR QUE O TAMANHO PERMITIDO("<<maxSteps<<"), A STRING '"<<value<<"' SERA CORTADA\n";
+	
+	string ret = "";
+	if(value.size() > maxSteps)
+		ret = value.substr(maxSteps);
+	
+	value.resize(maxSteps); // resize não considera o \0
+	setString(byte, value);
+	return ret;
+}
+
+string Bloco::getString(int byte, int steps)
+{
+	Util u;
+	
+	string ret;
+	ret.resize(steps);
+	
+	for(int i = 0; i < steps; i++)
+	{
+		bitset<8> bs = getByte(byte + i);
+		ret[i] = u.getChar(bs);
+	}
+	ret[steps] = 0;
+	return ret;
+}
+
+// INT
+void Bloco::setInt(int byte, unsigned int value)
+{
+	for(int i = 0; i < MP_SIZE; i++)
+	{
+		int pot = pow(MAX_BIT, MP_SIZE - i - 1);
+		setByte(i + byte, value / pot);
+		value = value % pot;
+	}
+}
+
+unsigned int Bloco::getInt(int byte)
+{
+	unsigned int ret = 0;
+	int iterador = 0;
+	Util u;
+	for(int i = MP_SIZE - 1; i >= 0; i--)
+	{
+		int pot = pow(MAX_BIT, iterador);
+		ret += u.getChar(getByte(i + byte)) * pot;
+		iterador++;
+	}
+		
+	return ret;
+}
+
+int Bloco::getFreeSpace()
+{
+	int i;
+	if(temNome())
+		i = DADOS_BYTE;
+	else
+		i = NOME_BYTE;
+
+	for(i; i < MAX_BYTE; i += 4)
+		if(getInt(i) == 0)
+			return i;
+}
+
+// ----------------------------------------------// --- // ----------------------------------------------//
+
+// MEMORIA
 void Bloco::setMemoria(int value)
 {
-    Util u;
-	setDados(MP_BYTE, MP_SIZE, u.itos(value));
+	setInt(MP_BYTE, value);
 }
 
-int Bloco::getMemoria()
+unsigned int Bloco::getMemoria()
 {
-	return atoi(getDados(MP_BYTE, MP_SIZE).c_str());
+	return getInt(MP_BYTE);
 }
 
-// ============= FLAG ============= //
+
+// FLAG
 void Bloco::setFlag(int bit, bool value)
 {
 	if(bit < 7)
@@ -151,88 +242,53 @@ bool Bloco::getFlag(int bit)
 	return false;
 }
 
-
-// ============= NOME ============= //
-void Bloco::setNome(const char* n)
+bool Bloco::isFree()
 {
-	string s = n;
-	setDados(NOME_BYTE, NOME_SIZE, s);
+	return !getBit(FLAG_BIT + FLAG_OCUPADO);
+}
+
+bool Bloco::temNome()
+{
+	return getBit(FLAG_BIT + FLAG_NOME);
+}
+
+bool Bloco::isFolder()
+{
+	return getBit(FLAG_BIT + FLAG_TIPO);
+}
+
+
+//  NOME
+void Bloco::setNome(string n)
+{
+	setString(NOME_BYTE, NOME_SIZE, n);
 }
 
 string Bloco::getNome()
 {
-	string ret = getDados(NOME_BYTE, NOME_SIZE);
+	string ret = getString(NOME_BYTE, NOME_SIZE);
 	return ret;
 }
 
 void Bloco::getNome(char ret[NOME_SIZE])
 {
-	string str = getDados(NOME_BYTE, NOME_SIZE);
+	string str = getString(NOME_BYTE, NOME_SIZE);
 	strcpy(ret, str.c_str());
 }
 
 
-// ============= DADOS ============= //
-void Bloco::setDados(int byte, const string value)
+// DADOS
+string Bloco::setDados(string value)
 {
-	int maxByte = byte + value.length();
-	if(maxByte > 127)
-	{
-		if(omitWar == false)
-			cout<<"ERRO(Bloco.setDados): IMPOSSIVEL SETAR ESSE VALOR NAS POSICOES "<<byte<<" a "<<maxByte<<" - OVERFLOW BYTE MAXIMO: "<<MAX_BYTE - 1<<"\n";
-		return;
-	}
-	
-
-	for(int i = 0; i <= maxByte; i++)
-		if(i < value.length())
-			setByte(byte++, value[i]);
-	//setByte(byte, 0);
+	if(temNome())
+		return setString(DADOS_BYTE, DADOS_SIZE, value);
+	return setString(NOME_BYTE, NOME_SIZE + DADOS_SIZE, value);
 }
 
-void Bloco::setDados(int byte, int maxSteps, string value) // maxSteps deve considerar o \0 (ex: nome pode ter até 26 caracteres, maxSteps = 27)
+string Bloco::getDados()
 {
-	if(value.length() > maxSteps - 1 && omitWar == false) // length não considera o \0
-		cout<<"AVISO(Bloco.setDados): TAMANHO DA STRING E MAIOR QUE O maxSteps("<<maxSteps<<"), A STRING '"<<value<<"'SERA CORTADA\n";
-		
-	value.resize(maxSteps - 1); // resize não considera o \0
-	setDados(byte, value);
+	if(temNome())
+		return getString(DADOS_BYTE, DADOS_SIZE);
+	return getString(NOME_BYTE, NOME_SIZE + DADOS_SIZE);
 }
-
-void Bloco::setAreaDados(string value)
-{
-	setDados(DADOS_BYTE, DADOS_SIZE, value);
-}
-
-string Bloco::getDados(int byte, int steps)
-{
-	Util u;
-	
-	string ret;
-	ret.resize(steps);
-	
-	for(int i = 0; i < steps; i++)
-	{
-		bitset<8> bs = getByte(byte + i);
-		ret[i] = u.getChar(bs);
-	}
-	ret[steps] = 0;
-	return ret;
-}
-
-string Bloco::getAreaDados()
-{
-	return getDados(DADOS_BYTE, DADOS_SIZE);
-}
-
-
-
-
-
-
-
-
-
-
-
 

@@ -172,7 +172,7 @@ void Comandos::create(){
                 string linha = "";
                 linha.clear();
 				getline(cin, linha);
-                e = hd->criarArquivo(t.t2, linha);
+//                e = hd->criaArquivo(t.t2, linha);
 				if(!e.status){
 					cout << "Arquivo " << t.t2 << " gravado com sucesso!" << endl;
 				} else {
@@ -186,7 +186,7 @@ void Comandos::create(){
 				e.status = true;
 			}
 			else {
-                e = hd->criarPasta(t.t2);
+//                e = hd->criarPasta(t.t2);
 				if(!e.status){
 					cout << "Pasta " << t.t2 << " criada com sucesso!" << endl;
 				} else {

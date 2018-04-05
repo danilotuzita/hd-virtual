@@ -24,7 +24,7 @@ HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
 CommandLine=
-Folders=Bloco.cpp,Classes
+Folders=Classes,Classes/Bloco,Classes/HD,Compilador
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
@@ -60,18 +60,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit2]
-FileName=Classes\Bloco.h
-CompileCpp=1
-Folder=Bloco.cpp
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit3]
-FileName=Classes\Bloco.cpp
+FileName=includes.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -81,9 +71,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit6]
-FileName=Compilador\Comandos.h
+FileName=Classes\Util.h
 CompileCpp=1
-Folder=
+Folder=Classes
 Compile=1
 Link=1
 Priority=1000
@@ -91,9 +81,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit4]
-FileName=includes.h
+FileName=Compilador\Comandos.cpp
 CompileCpp=1
-Folder=Bloco.cpp
+Folder=Compilador
 Compile=1
 Link=1
 Priority=1000
@@ -101,9 +91,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit5]
-FileName=Compilador\Comandos.cpp
+FileName=Compilador\Comandos.h
 CompileCpp=1
-Folder=
+Folder=Compilador
 Compile=1
 Link=1
 Priority=1000
@@ -111,9 +101,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit7]
-FileName=Classes\Util.h
+FileName=Classes\Util.cpp
 CompileCpp=1
-Folder=
+Folder=Classes
 Compile=1
 Link=1
 Priority=1000
@@ -121,9 +111,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
-FileName=Classes\Util.cpp
+FileName=Classes\HD.h
 CompileCpp=1
-Folder=
+Folder=Classes/HD
 Compile=1
 Link=1
 Priority=1000
@@ -131,9 +121,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit9]
-FileName=Classes\HD.h
+FileName=Classes\HD.cpp
 CompileCpp=1
-Folder=
+Folder=Classes/HD
 Compile=1
 Link=1
 Priority=1000
@@ -141,9 +131,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit10]
-FileName=Classes\HD.cpp
+FileName=Compilador\Automatos.cpp
 CompileCpp=1
-Folder=
+Folder=Compilador
 Compile=1
 Link=1
 Priority=1000
@@ -151,9 +141,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit11]
-FileName=Compilador\Automatos.cpp
+FileName=Compilador\Automatos.hpp
 CompileCpp=1
-Folder=
+Folder=Compilador
 Compile=1
 Link=1
 Priority=1000
@@ -161,9 +151,19 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit12]
-FileName=Compilador\Automatos.hpp
+FileName=Classes\Bloco.h
 CompileCpp=1
-Folder=
+Folder=Classes/Bloco
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2]
+FileName=Classes\Bloco.cpp
+CompileCpp=1
+Folder=Classes/Bloco
 Compile=1
 Link=1
 Priority=1000

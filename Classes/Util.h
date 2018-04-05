@@ -1,13 +1,14 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include <bitset>
 #include <cmath>
+#include <bitset>
+#include <string>
 #include <cstring>
 #include <cstdlib>
-#include <string>
-#include <iostream>
 #include <sstream>
+#include <iomanip>
+#include <iostream>
 
 using namespace std;
 
@@ -31,7 +32,10 @@ class Util
 		void formatByte(int, bitset<8>);
 		void printPropriedade(string);
 		string itos(int);
-		string itob(int);
+//		string itob(int);
+		
+		void printHex(bitset<8>);
+		void printChar(bitset<8>);
 		
 	private:
 };
