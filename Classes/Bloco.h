@@ -46,6 +46,8 @@ class Bloco
 		
 		
 		//DADOS
+		void desocupa();
+		
 			//str
 			string setString(int, int, string);
 			void setString(int, const string);

@@ -2,19 +2,18 @@
 
 HD::HD()
 {
-	ultimoBlocoLivre = 0;
+	ultimoBlocoLivre = POS_RAIZ + 1;
 	localAtual = POS_RAIZ;
 }
 
 HD::~HD()
 {
-	//cout<<"fechando arq"<<endl;
 	if (fp != NULL) {
 	    for(int i = 0; i < TAM; i++){
-			string temp = hd[i].getString(0, MAX_BYTE);
+	    	string temp = hd[i].getString(0, MAX_BYTE);
 			fwrite(temp.c_str(), MAX_BYTE, 1, fp);
 		}
-	
+		
 		fclose(fp);
 	}
 }
@@ -56,16 +55,10 @@ void HD::headHD(){
 }
 
 void HD::raizHD(){
-	localAtual = criaPasta("c:");
-	cout << "Local atual: " << localAtual << endl; 
-}
-
-void HD::propriedadesHD(string * mensagem){
-
-	Util u; 
-	mensagem[0] = "Nome: " + hd[POS_HEADER].getString(BYTE_HEADER_NOME, SIZE_HEADER_NOME);
-	mensagem[1] = "Tamanho: " + u.itos((int)hd[POS_HEADER].getInt(BYTE_HEADER_TAMANHO)) + "kb";
-
+	hd[POS_RAIZ].setFlag(FLAG_NOME, true);
+	hd[POS_RAIZ].setFlag(FLAG_OCUPADO, true);
+	hd[POS_RAIZ].setFlag(FLAG_TIPO, TIPO_PASTA);
+	hd[POS_RAIZ].setNome("C:");
 }
 
 erro HD::openHD(string nomeHD){
@@ -119,7 +112,7 @@ erro HD::carregaHD(){
 	//bloco.setFlag(FLAG_OCUPADO, true);
 	hd[0] = bloco;
 	
-	for(int j = 1; j < TAM; j++) //iterando os blocos
+	for(int j = POS_RAIZ; j < TAM; j++) //iterando os blocos
 	{
         for(int i = 0; i < MAX_BYTE; i++) //lendo 1 Bloco
 		{
@@ -129,14 +122,14 @@ erro HD::carregaHD(){
 
 		hd[j] = bloco;
 		
-		if(hd[j].isFree() && ultimoBlocoLivre == 0)
+		if(hd[j].isFree() && ultimoBlocoLivre == POS_RAIZ)
 		{
             ultimoBlocoLivre = j;
 		}
-		else if(!hd[j].isFree() && ultimoBlocoLivre == (j - 1) && (j - 1) != 0)
+		else if(!hd[j].isFree() && ultimoBlocoLivre == (j - 1) && (j - 1) != POS_RAIZ)
 		{
             blocosLivres.push(ultimoBlocoLivre);
-            ultimoBlocoLivre = 0;
+            ultimoBlocoLivre = POS_RAIZ;
 		}
 	}
 	
@@ -148,10 +141,10 @@ int HD::getFreeBlock()
 	int i;
 	
 	if(blocosLivres.empty())
-		if(ultimoBlocoLivre > TAM)
+		if(ultimoBlocoLivre >= TAM)
 			return -1;
 		else
-			return ultimoBlocoLivre++;
+			return ultimoBlocoLivre++;		
 
 	i = blocosLivres.front();
 	blocosLivres.pop();
@@ -165,7 +158,6 @@ int HD::criaArquivo(string nome, string dados)
 	if(i == -1)
 			return -1; // HD ESTÁ SEM ESPAÇO
 	
-	//cout<<NOME_SIZE + DADOS_SIZE<<": ";
 	while(dados.size())
 	{
 		if(nome.size())
@@ -179,12 +171,15 @@ int HD::criaArquivo(string nome, string dados)
 		hd[i].setFlag(FLAG_TIPO, TIPO_ARQUIVO);
 		dados = hd[i].setDados(dados);
 		
-		int next = getFreeBlock();
-		if(next == -1)
-			return -1; // HD ESTÁ SEM ESPAÇO
-		
-		hd[i].setMemoria(next); // o bloco atual aponta para o proximo bloco livre
-		i = next;
+		if(dados.size())
+		{
+			int next = getFreeBlock();
+			if(next == -1)
+				return -1; // HD ESTÁ SEM ESPAÇO
+			
+			hd[i].setMemoria(next); // o bloco atual aponta para o proximo bloco livre
+			i = next;
+		}
 	}
 	//cout<<endl;
 	
@@ -253,6 +248,93 @@ queue<unsigned int> HD::abrePasta(unsigned int pai)
 	return pastas;
 }
 
+void HD::deletaArquivo(unsigned int bloco)
+{
+	if(bloco > TAM || !hd[bloco].temNome() || hd[bloco].isFree() || hd[bloco].isFolder())
+		return;
+
+	while(bloco)
+	{
+		int next = hd[bloco].getMemoria();
+		hd[bloco].desocupa();
+		bloco = next;
+	}
+}
+
+void HD::deletaRef(unsigned int bloco, unsigned int ref)
+{
+	if(bloco > TAM || !hd[bloco].temNome() || hd[bloco].isFree())
+		return;
+	
+	while(bloco)
+	{
+		int i;
+		if(hd[bloco].temNome())
+			i = DADOS_BYTE;
+		else
+			i = NOME_BYTE;
+			
+		for(; i < MAX_BYTE; i += 4)
+		{
+			if(ref == hd[bloco].getInt(i))
+			{
+				hd[bloco].setInt(i, 0);
+				return;
+			}
+		}
+		
+		bloco = hd[bloco].getMemoria();
+	}
+}
+
+void HD::deletaPasta(unsigned int bloco)
+{
+	if(bloco > TAM || !hd[bloco].temNome() || hd[bloco].isFree() || !hd[bloco].isFolder())
+		return;
+		
+	while(bloco)
+	{
+		int byte;
+		if(hd[bloco].temNome())
+			byte = DADOS_BYTE;
+		else
+			byte = NOME_BYTE;
+			
+		for(; byte < MAX_BYTE; byte += 4)
+		{
+			int filho = hd[bloco].getInt(byte);
+			if(filho)
+				deleta(bloco, filho);
+		}
+		
+		hd[bloco].desocupa();
+		bloco = hd[bloco].getMemoria();
+	}
+}
+
+void HD::deleta(unsigned int pai, unsigned int filho)
+{
+	deletaRef(pai, filho);
+	deleta(filho);
+}
+
+void HD::deleta(unsigned int bloco)
+{
+	if(getTipo(bloco) == TIPO_PASTA)
+		deletaPasta(bloco);
+	else
+		deletaArquivo(bloco);
+	
+}
+
+// UTIL
+void HD::propriedadesHD(string * mensagem){
+	Util u; 
+	mensagem[0] = "Nome: " + hd[POS_HEADER].getString(BYTE_HEADER_NOME, SIZE_HEADER_NOME);
+	mensagem[1] = "Tamanho: " + u.itos((int)hd[POS_HEADER].getInt(BYTE_HEADER_TAMANHO)) + "kb";
+}
+
+// prints
 void HD::print(int bloco)
 {
 	hd[bloco].printAll();
@@ -261,7 +343,7 @@ void HD::print(int bloco)
 void HD::printChain(int pos)
 {
 	if(pos > TAM || !hd[pos].temNome() || hd[pos].isFree())
-		return ;
+		return;
 	
 	int next = pos;
 	do
@@ -272,6 +354,19 @@ void HD::printChain(int pos)
 	}while(next);
 }
 
+void HD::printHD()
+{
+	for(int i = 1; i < TAM; i++)
+	{
+		if(!hd[i].isFree() && hd[i].temNome())
+		{
+			cout<<"BLOCO "<<i<<": \n";
+			printChain(i);
+		}
+	}
+}
+
+// get
 string HD::getNome(unsigned int pos)
 {
 	return hd[pos].getNome();
@@ -282,6 +377,7 @@ bool HD::getTipo(unsigned int pos)
 	return hd[pos].isFolder();
 }
 
+// posicoes
 int HD::getLocalAtual(){
 	return localAtual;
 }
@@ -289,3 +385,5 @@ int HD::getLocalAtual(){
 void HD::setLocalAtual(unsigned int pos){
 	localAtual = pos;
 }
+
+

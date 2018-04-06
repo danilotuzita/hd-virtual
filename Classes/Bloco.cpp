@@ -125,6 +125,11 @@ bitset<8> Bloco::getByte(int byte)
 
 
 // DADOS
+void Bloco::desocupa()
+{
+	setFlag(FLAG_OCUPADO, false);	
+}
+
 // STR
 void Bloco::setString(int byte, const string value)
 {
@@ -161,7 +166,6 @@ string Bloco::getString(int byte, int steps)
 	Util u;
 	
 	string ret;
-	ret.resize(steps);
 	
 	for(int i = 0; i < steps; i++)
 	{

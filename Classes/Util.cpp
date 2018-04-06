@@ -23,7 +23,7 @@ char Util::getChar(bitset<8> b)
 	char ret = 0;
 	for(int i = 0; i < 8; i++)
 		ret += b[i] * pow(2, i);
-		
+
 	return ret;
 }
 
@@ -109,5 +109,13 @@ void Util::listaHDS(){
 
         closedir(dirp);
     }
+}
+
+string Util::trim(string entrada)
+{
+	string retorno = "";
+	for(int i = 0; entrada[i]; i++)
+		retorno += entrada[i];
+	return retorno;
 }
 

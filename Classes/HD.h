@@ -34,25 +34,37 @@ class HD
 		
 		// ARQUIVOS
 		int getFreeBlock();
-		string getNome(unsigned int);
-		bool getTipo(unsigned int);
+		void deleta(unsigned int);
+		void deleta(unsigned int, unsigned int);
 		
 			// arquivo
 			int criaArquivo(string, string);
 			string leArquivo(unsigned int);
+			void deletaArquivo(unsigned int);
 			
 			// pasta
 			int criaPasta(string);
 			void addPasta(unsigned int);
 			void addPasta(unsigned int, unsigned int);
 			queue<unsigned int> abrePasta(unsigned int);
+			void deletaPasta(unsigned int);
+			void deletaRef(unsigned int, unsigned int);
 		
 		// UTIL
-		void print(int);
-		void printChain(int);
 		void propriedadesHD(string *);
-		int getLocalAtual();
-		void setLocalAtual(unsigned int);
+		
+			// print
+			void print(int);
+			void printChain(int);
+			void printHD();
+			
+			// get
+			string getNome(unsigned int);
+			bool getTipo(unsigned int);
+			
+			// posições
+			int getLocalAtual();
+			void setLocalAtual(unsigned int);
 		
 	private:
 		vector<Bloco> hd;

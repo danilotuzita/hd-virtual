@@ -41,6 +41,8 @@ class Util
 		void printHex(bitset<8>);
 		void printChar(bitset<8>);
 		
+		string trim(string);
+		
 	private:
 };
 

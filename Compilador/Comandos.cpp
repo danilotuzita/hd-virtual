@@ -355,6 +355,7 @@ void Comandos::cd(){
 			if(hd->getTipo(pos) == TIPO_PASTA){
 				
 				if(u.compString(getParametros().c_str(), hd->getNome(pos).c_str())){
+					cout<<"LOCAL: "<<pos<<endl;
 					hd->setLocalAtual(pos);
 					trilha.push_back(pos);
 					encontrado = true;
@@ -387,6 +388,10 @@ void Comandos::ls(){
 	
 	t = separar(getParametros());
 	
+	cout<<"localAtual: "<<hd->getLocalAtual()<<endl;
+
+	hd->printChain(hd->getLocalAtual());
+
 	unsigned int pos;
 	queue<unsigned int> pasta;
 	
@@ -396,6 +401,7 @@ void Comandos::ls(){
 	}
 	else {
 		
+//		cout<<"LOCAL: "<<hd->getLocalAtual()<<endl;
 		pasta = hd->abrePasta(hd->getLocalAtual());
 		
 		while(!pasta.empty())
