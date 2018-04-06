@@ -8,6 +8,7 @@ using namespace std;
 Comandos::Comandos(string _comando){
 	hd = new HD;
 	nomeHD.clear();
+	caminho.clear();
 	hdSelecionado = false;
 	setComando(_comando);
 }
@@ -137,7 +138,7 @@ erro Comandos::validarComando(){
 }
 
 string Comandos::getNomeHD(){
-	return nomeHD;
+	return nomeHD + caminho;
 }
 
 // Funções de comando
@@ -332,32 +333,54 @@ void Comandos::cat(){
 
 void Comandos::cd(){
 
-	bool encontrado = false;
 	unsigned int pos;
 	
-	queue<unsigned int> pasta = hd->abrePasta(hd->getLocalAtual());
-	
-	while(!pasta.empty() && !encontrado){
-		
-		pos = pasta.front();
-		
-		if(hd->getTipo(pos) == TIPO_PASTA){
-			
-			if(u.compString(getParametros().c_str(), hd->getNome(pos).c_str())){
-				hd->setLocalAtual(pos);
-				nomeHD += " ~ " + hd->getNome(pos);
-				encontrado = true;
-			}
-						
+	if(getParametros() == ".."){
+		if(trilha.size() != 0){
+			trilha.pop_back();
+			pos = trilha.size() == 0 ? POS_RAIZ : trilha.back();
+			hd->setLocalAtual(pos);
+			montaCaminho();
 		}
-		pasta.pop();
-	
 	}
+	else{
 	
-	if(!encontrado){
-		cout << "\nPasta " << getParametros() << " nao encontrada" << endl;
+		queue<unsigned int> pasta = hd->abrePasta(hd->getLocalAtual());
+		bool encontrado = false;
+		
+		while(!pasta.empty() && !encontrado){
+		
+			pos = pasta.front();
+			
+			if(hd->getTipo(pos) == TIPO_PASTA){
+				
+				if(u.compString(getParametros().c_str(), hd->getNome(pos).c_str())){
+					hd->setLocalAtual(pos);
+					trilha.push_back(pos);
+					encontrado = true;
+					montaCaminho();
+				}
+							
+			}
+			pasta.pop();
+		
+		}
+		
+		if(!encontrado){
+			cout << "\nPasta " << getParametros() << " nao encontrada" << endl;
+		}	
 	}
+}
 
+void Comandos::montaCaminho(){
+	
+	caminho.clear();
+	
+	if(trilha.size() != 0){
+		for(int i = 0; i < trilha.size(); i++){
+			caminho += "\\" + hd->getNome(trilha[i]);
+		}	
+	}
 }
 
 void Comandos::ls(){

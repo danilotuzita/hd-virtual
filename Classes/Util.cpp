@@ -73,13 +73,12 @@ void Util::printChar(bitset<8> b)
 }
 
 bool Util::compString(const char * str1, const char * str2){
-	int i;
-	for(i = 0; i < str1[i] != 0 && str2[i] != 0; i++){
-		if(str1[i] != str2[i]) return false;
-	}
-	
-	if(str1[i - 1] != str2[i - 1]) return false;
-	else return true;
+	int i = 0;
+	bool ret = false;
+	for(i = 0; str1[i] != 0 && str2[i] != 0 && str1[i] == str2[i]; i++);
+	if(str1[i] == 0 && str2[i] == 0) ret = true;
+	else if(str1[i] != 0 && str2[i] == 0 || str1[i] == 0 && str2[i] != 0 || str1[i] != 0 && str2[i] != 0) ret = false;
+	return ret;
 	
 }
 

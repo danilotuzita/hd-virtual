@@ -2,7 +2,7 @@
 
 HD::HD()
 {
-	ultimoBlocoLivre = 2;
+	ultimoBlocoLivre = 0;
 	localAtual = POS_RAIZ;
 }
 

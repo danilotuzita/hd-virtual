@@ -22,7 +22,11 @@ class Comandos{
 		string comandoCompleto;
 
 		HD * hd;
+		
 		string nomeHD;
+		string caminho;
+		vector<unsigned int> trilha;
+		
 		bool hdSelecionado;
 		
 		bool validarParametros(int cod_comando, string parametros);
@@ -36,7 +40,10 @@ class Comandos{
 		void move();
 		void df();
 		void cat();
+		
 		void cd();
+		void montaCaminho();
+		
 		void ls();
 		void help();
 
