@@ -47,13 +47,12 @@ class HD
 			void addPasta(unsigned int, unsigned int);
 			queue<unsigned int> abrePasta(unsigned int);
 		
-//		erro criarArquivo(string, string); //retirei essas funções pq eu não soube como
-//		erro criarPasta(string); // trabalhar em cima delas
-		
 		// UTIL
 		void print(int);
 		void printChain(int);
 		void propriedadesHD(string *);
+		int getLocalAtual();
+		void setLocalAtual(unsigned int);
 		
 	private:
 		vector<Bloco> hd;

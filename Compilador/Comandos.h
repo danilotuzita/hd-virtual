@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <string>
+#include <queue>
 #include "../Classes/Util.h"
 #include "../Classes/HD.h"
 
@@ -14,6 +15,7 @@ class Comandos{
 
         split t;
         erro e;
+        Util u;
 
 		string comando;
 		string parametro;
@@ -21,6 +23,7 @@ class Comandos{
 
 		HD * hd;
 		string nomeHD;
+		bool hdSelecionado;
 		
 		bool validarParametros(int cod_comando, string parametros);
 		int getCodComando(char * nome_comando);

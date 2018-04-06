@@ -8,11 +8,12 @@ using namespace std;
 Comandos::Comandos(string _comando){
 	hd = new HD;
 	nomeHD.clear();
+	hdSelecionado = false;
 	setComando(_comando);
 }
 
 Comandos::~Comandos(){
-	delete hd;
+	if(hdSelecionado) delete hd;
 }
 
 void Comandos::separarComando(){
@@ -99,11 +100,16 @@ erro Comandos::validarComando(){
 	t.t2.clear();
 	
 	if(getComando()[getComando().size() - 1] == ':'){
-        nomeHD = getComando();
+    
+	    nomeHD = getComando();
         nomeHD.resize(nomeHD.size() -1);
-        delete hd;
+    
+        if(hdSelecionado) delete hd;
+    
         hd = new HD;
         hd->openHD(nomeHD);
+    
+	    hdSelecionado = true;
 	}
 	else{
 		if(e0()){
@@ -157,6 +163,7 @@ void Comandos::create(){
 					e = hd->createHD(a.t1, atoi(a.t2.c_str()));
 					if(!e.status){
 						cout << "HD " << a.t1 << " criado com sucesso (tamanho: " << atoi(a.t2.c_str()) * MAX_BYTE << " bytes)" << endl;
+						hdSelecionado = true;
 					} else {
 						cout << "Erro: " << e.mensagem << endl;
 					}
@@ -169,11 +176,16 @@ void Comandos::create(){
 				e.status = true;
 			}
 			else{
-                string linha = "";
+                
+				string linha = "";
                 linha.clear();
 				getline(cin, linha);
-//                e = hd->criaArquivo(t.t2, linha);
-				if(!e.status){
+                
+				int ret = hd->criaArquivo(t.t2, linha);
+                
+				hd->addPasta(hd->getLocalAtual(), ret);
+                
+				if(ret != -1){
 					cout << "Arquivo " << t.t2 << " gravado com sucesso!" << endl;
 				} else {
 					cout << "Erro: " << e.mensagem << endl;
@@ -186,8 +198,11 @@ void Comandos::create(){
 				e.status = true;
 			}
 			else {
-//                e = hd->criarPasta(t.t2);
-				if(!e.status){
+                
+				int ret = hd->criaPasta(t.t2);
+                hd->addPasta(hd->getLocalAtual(), ret);
+				
+				if(ret != -1){
 					cout << "Pasta " << t.t2 << " criada com sucesso!" << endl;
 				} else {
 					cout << "Erro: " << e.mensagem << endl;
@@ -288,20 +303,86 @@ void Comandos::df(){
 }
 
 void Comandos::cat(){
-	cout << "Ler conteudo do arquivo: " << getParametros();
+
+	bool encontrado = false;
+	unsigned int pos;
+	
+	queue<unsigned int> pasta = hd->abrePasta(hd->getLocalAtual());
+	
+	while(!pasta.empty() && !encontrado){
+		
+		pos = pasta.front();
+		
+		if(hd->getTipo(pos) == TIPO_ARQUIVO){
+			
+			if(u.compString(getParametros().c_str(), hd->getNome(pos).c_str())){
+				cout << "\n" << hd->leArquivo(pos) << "\n\n";
+				encontrado = true;
+			}
+						
+		}
+		pasta.pop();
+	
+	}
+	
+	if(!encontrado){
+		cout << "\nArquivo " << getParametros() << " nao encontrado" << endl;
+	}
 }
 
 void Comandos::cd(){
-	cout << "Ir para: " << getParametros();
+
+	bool encontrado = false;
+	unsigned int pos;
+	
+	queue<unsigned int> pasta = hd->abrePasta(hd->getLocalAtual());
+	
+	while(!pasta.empty() && !encontrado){
+		
+		pos = pasta.front();
+		
+		if(hd->getTipo(pos) == TIPO_PASTA){
+			
+			if(u.compString(getParametros().c_str(), hd->getNome(pos).c_str())){
+				hd->setLocalAtual(pos);
+				nomeHD += " ~ " + hd->getNome(pos);
+				encontrado = true;
+			}
+						
+		}
+		pasta.pop();
+	
+	}
+	
+	if(!encontrado){
+		cout << "\nPasta " << getParametros() << " nao encontrada" << endl;
+	}
+
 }
 
 void Comandos::ls(){
+	
 	t = separar(getParametros());
+	
+	unsigned int pos;
+	queue<unsigned int> pasta;
+	
 	if(t.t1 == "-h"){
-		cout << "Listar HD'S \n";
+		cout << "Lista de HD'S: \n";
+		u.listaHDS();
 	}
 	else {
-		cout << "Listar pastas e arquivos\n";
+		
+		pasta = hd->abrePasta(hd->getLocalAtual());
+		
+		while(!pasta.empty())
+		{
+			pos = pasta.front();
+			if(hd->getTipo(pos) == TIPO_PASTA) cout << "/";
+			cout << hd->getNome(pos) << " | ";
+			pasta.pop();
+		}
+		cout << endl;
 	}
 }
 

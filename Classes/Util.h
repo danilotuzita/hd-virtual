@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
+#include <dirent.h>
 
 using namespace std;
 
@@ -32,7 +33,10 @@ class Util
 		void formatByte(int, bitset<8>);
 		void printPropriedade(string);
 		string itos(int);
-//		string itob(int);
+		
+		bool compString(const char *, const char *);
+		bool verificaExtensao(char *);
+		void listaHDS();
 		
 		void printHex(bitset<8>);
 		void printChar(bitset<8>);

@@ -3,5 +3,6 @@
 #include "Compilador/Comandos.h"
 #include <cstdlib>
 #include <iostream>
+#include <queue>
 
 using namespace std;

@@ -2,7 +2,7 @@
 
 HD::HD()
 {
-	ultimoBlocoLivre = 1;
+	ultimoBlocoLivre = 2;
 	localAtual = POS_RAIZ;
 }
 
@@ -56,21 +56,8 @@ void HD::headHD(){
 }
 
 void HD::raizHD(){
-
-	Bloco raiz;
-
-	raiz.setMemoria(0);
-
-	raiz.setFlag(FLAG_OCUPADO, true);
-	raiz.setFlag(FLAG_NOME, true);
-	raiz.setFlag(FLAG_TIPO, true);
-
-	char nome[27] = "c:";
-	raiz.setNome(nome);
-	
-	raiz.setDados("");
-	
-	hd[POS_RAIZ] = raiz;
+	localAtual = criaPasta("c:");
+	cout << "Local atual: " << localAtual << endl; 
 }
 
 void HD::propriedadesHD(string * mensagem){
@@ -178,7 +165,7 @@ int HD::criaArquivo(string nome, string dados)
 	if(i == -1)
 			return -1; // HD ESTÁ SEM ESPAÇO
 	
-	cout<<NOME_SIZE + DADOS_SIZE<<": ";
+	//cout<<NOME_SIZE + DADOS_SIZE<<": ";
 	while(dados.size())
 	{
 		if(nome.size())
@@ -199,7 +186,7 @@ int HD::criaArquivo(string nome, string dados)
 		hd[i].setMemoria(next); // o bloco atual aponta para o proximo bloco livre
 		i = next;
 	}
-	cout<<endl;
+	//cout<<endl;
 	
 	return primeiroBloco;
 }
@@ -295,58 +282,10 @@ bool HD::getTipo(unsigned int pos)
 	return hd[pos].isFolder();
 }
 
-//erro HD::criarArquivo(string nome, string conteudo){
-//	return criarConteudo(nome, conteudo, false);
-//}
-//
-//erro HD::criarPasta(string nome){
-//	return criarConteudo(nome, "", true);
-//}
-//
-//erro HD::criarConteudo(string nome, string conteudo, bool tipo){
-//
-//	erro e;
-//	Util u;
-//
-//	e.status = false;
-//	e.mensagem.clear();
-//	
-//	int pos;
-//	int prox = ultimoBlocoLivre;
-//
-//	if(blocosLivres.empty()) // se não tem buraco
-//	{
-//		pos = ultimoBlocoLivre;
-//		prox++;
-//	} 
-//	else
-//	{
-//        pos = blocosLivres.front();
-//        blocosLivres.pop();
-//	}
-//
-//    hd[pos].setMemoria(0);
-//    
-//    hd[pos].setFlag(FLAG_OCUPADO, true);
-//	hd[pos].setFlag(FLAG_NOME, true);
-//	hd[pos].setFlag(FLAG_TIPO, tipo);
-//	
-//	hd[pos].setNome(nome.c_str());
-//	
-//	hd[pos].setDados(conteudo);
-//
-//	string areaDados = hd[localAtual].getDados();
-//
-//	int i;
-//	for(i = 0; areaDados[i] != 0; i++);
-//	areaDados.resize(i);
-//
-//    areaDados += u.itob(pos);
-//
-//    hd[localAtual].setDados(areaDados);
-//
-//    ultimoBlocoLivre = prox;
-//
-//	return e;
-//}
+int HD::getLocalAtual(){
+	return localAtual;
+}
 
+void HD::setLocalAtual(unsigned int pos){
+	localAtual = pos;
+}
