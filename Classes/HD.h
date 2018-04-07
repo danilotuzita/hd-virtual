@@ -49,9 +49,14 @@ class HD
 			queue<unsigned int> abrePasta(unsigned int);
 			void deletaPasta(unsigned int);
 			void deletaRef(unsigned int, unsigned int);
+			
+			/* localiza arquivo ou pasta dentro de uma pasta 
+			e retorna a posicao*/
+			int localizaObjeto(unsigned int, string, bool);
 		
 		// UTIL
 		void propriedadesHD(string *);
+		int getTamanho();
 		
 			// print
 			void print(int);
@@ -80,6 +85,8 @@ class HD
 		
 		void headHD();
 		void raizHD();
+		void recalEspacosLivres();
+		
 		erro criarConteudo(string, string, bool);
 };
 

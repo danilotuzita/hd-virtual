@@ -116,7 +116,7 @@ erro Comandos::validarComando(){
 		if(e0()){
 	        if(getComando() == "clear") system("cls");
 			else if(getComando() == "create") create();
-			else if(getComando() == "remove") remove();
+			else if(getComando() == "remove") remover();
 			else if(getComando() == "format") format();
 			else if(getComando() == "move") move();
 			else if(getComando() == "df") df();
@@ -220,32 +220,67 @@ void Comandos::create(){
 	}
 }
 
-void Comandos::remove(){
+void Comandos::remover(){
+	
 	t = separar(getParametros());
 	n = 0;
 	c.clear();
 	c = t.t1;
+	
+	int pos;
+
 	if(c0()){
 		if(t.t1 == "-hd"){
 			if(t.t2 == ""){
 				e.mensagem = "Informe o nome do hd";
 				e.status = true;
 			}
-			else cout << "Remover um hd com o nome: " << t.t2 << endl;
+			else {
+				if(getNomeHD() == t.t2){
+					delete hd;
+					nomeHD.clear();
+					hdSelecionado = false;
+				}
+				string nome = t.t2 + ".hd"; 
+				if( remove( nome.c_str() ) != 0 ){
+					cout << "HD " << t.t2 << " nao encontrado" << endl;		
+				} 
+				else {
+					cout << "HD " << t.t2 << " removido com sucesso" << endl;
+				}
+			}
 		}
 		else if(t.t1 == "-f"){
 			if(t.t2 == ""){
 				e.mensagem = "Informe o nome do arquivo";
 				e.status = true;
 			}
-			else cout << "Remover um arquivo com o nome: " << t.t2 << endl;
+			else{
+				pos = hd->localizaObjeto(hd->getLocalAtual(), t.t2, TIPO_ARQUIVO);
+				if(pos){
+					hd->deleta(hd->getLocalAtual(), pos);
+					cout << "Arquivo " << t.t2 << " removido" << endl;						
+				}
+				else{
+					cout << "\nArquivo " << t.t2 << " nao encontrado" << endl;
+				}
+			}
 		}
 		else if(t.t1 == "-d"){
 			if(t.t2 == ""){
 				e.mensagem = "Informe o nome da pasta";
 				e.status = true;
 			}
-			else cout << "Remover uma pasta com o nome: " << t.t2 << endl;
+			else {
+				pos = hd->localizaObjeto(hd->getLocalAtual(), t.t2, TIPO_PASTA);
+				if(pos){
+					hd->deleta(hd->getLocalAtual(), pos);
+					cout << "Arquivo " << t.t2 << " removido" << endl;	
+				}
+				else{
+					cout << "\nPasta " << t.t2 << " nao encontrada" << endl;
+				}
+			}
 		}
 		else{
 			cout << "Comando para remover de coisas no hd e bla bla bla bla \n";
@@ -262,21 +297,41 @@ void Comandos::format(){
 	n = 0;
 	c.clear();
 	c = t.t1;
-	if(f0()){
-		if(t.t1 == "-hd"){
-			if(t.t2 == ""){
-				e.mensagem = "Informe o nome do hd";
-				e.status = true;
-			}
-			else cout << "Formatar o hd com o nome: " << t.t2 << endl;
+	
+	if(t.t1 != "?"){
+		if(t.t1 == ""){
+			e.mensagem = "Informe o nome do hd";
+			e.status = true;
 		}
 		else{
-			cout << "Comando para formatar bla bla bla bla \n";
+			if(hdSelecionado){
+				delete hd;
+				nomeHD.clear();
+			}
+			if(u.hdExiste(t.t1 + ".hd")){
+
+		        hd = new HD;
+		        hd->openHD(t.t1);
+		        
+				int tamanho = hd->getTamanho();
+				tamanho = (tamanho * MAX_BYTE) / _1KB;
+		        
+				delete hd;
+		        
+		        hd = new HD;
+		        hd->createHD(t.t1, tamanho);
+		    	nomeHD = t.t1;
+		    	
+			    hdSelecionado = true;
+				
+			}
+			else{
+				cout << "HD " << t.t2 << " nao encontrado" << endl;
+			}
 		}
 	}
-	else {
-		e.mensagem = "Parametro invalido para o formatar e bla bla bla bla\n";
-		e.status = true;
+	else{
+		cout << "Comando para formatar bla bla bla bla \n";
 	}
 }
 
@@ -305,29 +360,13 @@ void Comandos::df(){
 
 void Comandos::cat(){
 
-	bool encontrado = false;
-	unsigned int pos;
-	
-	queue<unsigned int> pasta = hd->abrePasta(hd->getLocalAtual());
-	
-	while(!pasta.empty() && !encontrado){
-		
-		pos = pasta.front();
-		
-		if(hd->getTipo(pos) == TIPO_ARQUIVO){
-			
-			if(u.compString(getParametros().c_str(), hd->getNome(pos).c_str())){
-				cout << "\n" << hd->leArquivo(pos) << "\n\n";
-				encontrado = true;
-			}
-						
-		}
-		pasta.pop();
-	
-	}
-	
-	if(!encontrado){
+	int pos = hd->localizaObjeto(hd->getLocalAtual(), getParametros(), TIPO_ARQUIVO);
+
+	if(!pos){
 		cout << "\nArquivo " << getParametros() << " nao encontrado" << endl;
+	}
+	else {
+		cout << "\n" << hd->leArquivo(pos) << "\n\n";
 	}
 }
 
@@ -344,32 +383,17 @@ void Comandos::cd(){
 		}
 	}
 	else{
+		pos = hd->localizaObjeto(hd->getLocalAtual(), getParametros(), TIPO_PASTA);
 	
-		queue<unsigned int> pasta = hd->abrePasta(hd->getLocalAtual());
-		bool encontrado = false;
-		
-		while(!pasta.empty() && !encontrado){
-		
-			pos = pasta.front();
-			
-			if(hd->getTipo(pos) == TIPO_PASTA){
-				
-				if(u.compString(getParametros().c_str(), hd->getNome(pos).c_str())){
-					cout<<"LOCAL: "<<pos<<endl;
-					hd->setLocalAtual(pos);
-					trilha.push_back(pos);
-					encontrado = true;
-					montaCaminho();
-				}
-							
-			}
-			pasta.pop();
-		
+		if(!pos){
+			cout << "\nPasta " << getParametros() << " nao encontrada" << endl;		
+		} 
+		else {
+			//cout<<"LOCAL: "<<pos<<endl;
+			hd->setLocalAtual(pos);
+			trilha.push_back(pos);
+			montaCaminho();
 		}
-		
-		if(!encontrado){
-			cout << "\nPasta " << getParametros() << " nao encontrada" << endl;
-		}	
 	}
 }
 
@@ -388,9 +412,9 @@ void Comandos::ls(){
 	
 	t = separar(getParametros());
 	
-	cout<<"localAtual: "<<hd->getLocalAtual()<<endl;
+	//cout<<"localAtual: "<<hd->getLocalAtual()<<endl;
 
-	hd->printChain(hd->getLocalAtual());
+	//hd->printChain(hd->getLocalAtual());
 
 	unsigned int pos;
 	queue<unsigned int> pasta;
@@ -401,7 +425,7 @@ void Comandos::ls(){
 	}
 	else {
 		
-//		cout<<"LOCAL: "<<hd->getLocalAtual()<<endl;
+		//cout<<"LOCAL: "<<hd->getLocalAtual()<<endl;
 		pasta = hd->abrePasta(hd->getLocalAtual());
 		
 		while(!pasta.empty())

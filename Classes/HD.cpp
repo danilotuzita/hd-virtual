@@ -325,6 +325,50 @@ void HD::deleta(unsigned int bloco)
 	else
 		deletaArquivo(bloco);
 	
+	recalEspacosLivres();
+}
+
+int HD::localizaObjeto(unsigned int pai, string filho, bool tipo){
+	
+	int retorno = 0;
+	unsigned int pos;
+	
+	queue<unsigned int> pasta = abrePasta(pai);
+	
+	while(!pasta.empty() && !retorno){
+		
+		pos = pasta.front();
+		if(getTipo(pos) == tipo){
+			if(u.compString(filho.c_str(), getNome(pos).c_str())){
+				retorno = pos;
+			}
+						
+		}
+		pasta.pop();
+	
+	}
+	
+	return retorno;
+}
+
+void HD::recalEspacosLivres(){
+	
+	ultimoBlocoLivre = POS_RAIZ;
+	
+	while (!blocosLivres.empty())  blocosLivres.pop();
+	
+	for(int j = POS_RAIZ; j < TAM; j++) //iterando os blocos
+	{
+		if(hd[j].isFree() && ultimoBlocoLivre == POS_RAIZ)
+		{
+            ultimoBlocoLivre = j;
+		}
+		else if(!hd[j].isFree() && ultimoBlocoLivre == (j - 1) && (j - 1) != POS_RAIZ)
+		{
+            blocosLivres.push(ultimoBlocoLivre);
+            ultimoBlocoLivre = POS_RAIZ;
+		}
+	}
 }
 
 // UTIL
@@ -332,6 +376,10 @@ void HD::propriedadesHD(string * mensagem){
 	Util u; 
 	mensagem[0] = "Nome: " + hd[POS_HEADER].getString(BYTE_HEADER_NOME, SIZE_HEADER_NOME);
 	mensagem[1] = "Tamanho: " + u.itos((int)hd[POS_HEADER].getInt(BYTE_HEADER_TAMANHO)) + "kb";
+}
+
+int HD::getTamanho(){
+	return TAM;
 }
 
 // prints

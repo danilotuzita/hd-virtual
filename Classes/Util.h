@@ -37,6 +37,7 @@ class Util
 		bool compString(const char *, const char *);
 		bool verificaExtensao(char *);
 		void listaHDS();
+		bool hdExiste(string);
 		
 		void printHex(bitset<8>);
 		void printChar(bitset<8>);

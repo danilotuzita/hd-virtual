@@ -170,7 +170,7 @@ string Bloco::getString(int byte, int steps)
 	for(int i = 0; i < steps; i++)
 	{
 		bitset<8> bs = getByte(byte + i);
-		ret[i] = u.getChar(bs);
+		ret += u.getChar(bs);
 	}
 	ret[steps] = 0;
 	return ret;

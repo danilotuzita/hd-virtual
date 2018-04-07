@@ -36,7 +36,7 @@ class Comandos{
 		// Funcões de comando
 		void create();
 		void format();
-		void remove();
+		void remover();
 		void move();
 		void df();
 		void cat();

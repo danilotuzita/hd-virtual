@@ -111,6 +111,17 @@ void Util::listaHDS(){
     }
 }
 
+bool Util::hdExiste(string nome){
+
+    if (FILE *file = fopen(nome.c_str(), "r")) {
+        fclose(file);
+        return true;
+    } else {
+        return false;
+    }   
+
+}
+
 string Util::trim(string entrada)
 {
 	string retorno = "";

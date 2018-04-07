@@ -2,7 +2,7 @@
 
 using namespace std;
 
-
+/*
 void main2()
 {
 	string arquivo = "Prepared is me marianne pleasure likewise debating. Wonder an unable except better stairs do ye admire. His and eat secure sex called esteem praise. So moreover as speedily differed branched ignorant. Tall are her knew poor now does then. Procured to contempt oh he raptures amounted occasion. One boy assure income spirit lovers set. \nResidence certainly elsewhere something she preferred cordially law. Age his surprise formerly mrs perceive few stanhill moderate. Of in power match on truth worse voice would. Large an it sense shall an match learn. By expect it result silent in formal of. Ask eat questions abilities described elsewhere assurance. Appetite in unlocked advanced breeding position concerns as. Cheerful get shutters yet for repeated screened. An no am cause hopes at three. Prevent behaved fertile he is mistake on.";
@@ -30,12 +30,12 @@ void main2()
 	hd.printHD();
 	system("PAUSE");
 }
-
+*/
 
 int main(){
 	
-	main2();
-	return 0;
+	//main2();
+	//return 0;
 	
 	system("title HD GAMMA");
 	cout << "FEI [versao 1.0]\n(c) 2018 FEI - CC6270 (Giovanni/Danilo/Guilherme) Todos os direitos reservados.\n\n";
