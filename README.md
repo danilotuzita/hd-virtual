@@ -6,7 +6,7 @@ Projeto de sistemas operacionais
 
 - [x] HD VIRTUAL - Criar
 - [x] HD VIRTUAL - Formatar
-- [ ] HD VIRTUAL - Exibir conteúdo
+- [x] HD VIRTUAL - Exibir conteúdo
 - [x] ARQUIVOS - Criar
 - [x] ARQUIVOS - Exibir
 - [x] ARQUIVOS - Remover

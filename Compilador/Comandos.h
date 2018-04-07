@@ -46,6 +46,8 @@ class Comandos{
 		void montaCaminho();
 		
 		void ls();
+		void typehd();
+		
 		void help();
 		
 	public:

@@ -111,6 +111,8 @@ erro Comandos::validarComando(){
         hd->openHD(nomeHD);
     
 	    hdSelecionado = true;
+	    
+	    hd->printHD();
 	}
 	else{
 		if(e0()){
@@ -124,6 +126,7 @@ erro Comandos::validarComando(){
 	 		else if(getComando() == "cd") cd();
 			else if(getComando() == "ls") ls();
 			else if(getComando() == "rename") renomear();
+			else if(getComando() == "typehd") typehd();
 			else if(getComando() == "?") help();
 		}
 		else{
@@ -481,6 +484,27 @@ void Comandos::renomear(){
 		}		
 	}
 		
+}
+
+void Comandos::typehd(){
+	
+	if(hdSelecionado){
+		delete hd;
+		nomeHD.clear();
+	}
+	if(u.hdExiste(getParametros() + ".hd")){
+
+        hd = new HD;
+        hd->openHD(getParametros());
+        
+    	nomeHD = getParametros();
+    	
+	    hd->printHD();
+		
+	}
+	else{
+		cout << "HD " << getParametros() << " nao encontrado" << endl;
+	}
 }
 
 void Comandos::help(){

@@ -25,6 +25,12 @@ bool e23();
 bool e24();
 bool e25();
 bool e26();
+bool e27();
+bool e28();
+bool e29();
+bool e30();
+bool e31();
+
 bool c0();
 bool c1();
 bool c2();
@@ -47,6 +53,7 @@ bool e0(){
 		else if(c[m] == 'f') return e14();
 		else if(c[m] == 'm') return e18();
 		else if(c[m] == 'e') return e20();
+		else if(c[m] == 't') return e27();
 		else return false;
 	}
 	else{
@@ -237,6 +244,42 @@ bool e26(){
 	if(c[m] == 'm') return e5();
 	else return false;
 }
+
+bool e27(){
+	int m = n;
+	n++;
+	if(c[m] == 'y') return e28();
+	else return false;
+}
+
+bool e28(){
+	int m = n;
+	n++;
+	if(c[m] == 'p') return e29();
+	else return false;
+}
+
+bool e29(){
+	int m = n;
+	n++;
+	if(c[m] == 'e') return e30();
+	else return false;
+}
+
+bool e30(){
+	int m = n;
+	n++;
+	if(c[m] == 'h') return e31();
+	else return false;
+}
+
+bool e31(){
+	int m = n;
+	n++;
+	if(c[m] == 'd') return e6();
+	else return false;
+}
+
 
 // AUTOMATO CREATE
 
