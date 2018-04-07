@@ -50,6 +50,8 @@ class HD
 			void deletaPasta(unsigned int);
 			void deletaRef(unsigned int, unsigned int);
 			
+			void renomear(unsigned int, string);
+			
 			/* localiza arquivo ou pasta dentro de uma pasta 
 			e retorna a posicao*/
 			int localizaObjeto(unsigned int, string, bool);

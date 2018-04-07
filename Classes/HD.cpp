@@ -328,6 +328,10 @@ void HD::deleta(unsigned int bloco)
 	recalEspacosLivres();
 }
 
+void HD::renomear(unsigned int bloco, string novoNome){
+	hd[bloco].setNome(novoNome);
+}
+
 int HD::localizaObjeto(unsigned int pai, string filho, bool tipo){
 	
 	int retorno = 0;

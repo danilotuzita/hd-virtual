@@ -38,6 +38,7 @@ class Comandos{
 		void format();
 		void remover();
 		void move();
+		void renomear();
 		void df();
 		void cat();
 		

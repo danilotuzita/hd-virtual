@@ -23,6 +23,8 @@ bool e21();
 bool e22();
 bool e23();
 bool e24();
+bool e25();
+bool e26();
 bool c0();
 bool c1();
 bool c2();
@@ -113,6 +115,7 @@ bool e9(){
 	int m = n;
 	n++;
 	if(c[m] == 'm') return e10();
+	else if(c[m] == 'n') return e25();
 	else return false;
 }
 
@@ -218,6 +221,20 @@ bool e24(){
 	int m = n;
 	n++;
 	if(c[m] == 'r') return e6();
+	else return false;
+}
+
+bool e25(){
+	int m = n;
+	n++;
+	if(c[m] == 'a') return e26();
+	else return false;
+}
+
+bool e26(){
+	int m = n;
+	n++;
+	if(c[m] == 'm') return e5();
 	else return false;
 }
 

@@ -123,6 +123,7 @@ erro Comandos::validarComando(){
 			else if(getComando() == "cat") cat();
 	 		else if(getComando() == "cd") cd();
 			else if(getComando() == "ls") ls();
+			else if(getComando() == "rename") renomear();
 			else if(getComando() == "?") help();
 		}
 		else{
@@ -437,6 +438,49 @@ void Comandos::ls(){
 		}
 		cout << endl;
 	}
+}
+
+void Comandos::renomear(){
+	
+	t = separar(getParametros());
+	
+	split nomes;
+	nomes = separar(t.t2);
+	
+	unsigned int pos;
+	
+	if(nomes.t1 == ""){
+		cout << "Informe o nome\n";
+	}
+	else if(nomes.t2 == ""){
+		cout << "Informe o novo nome\n";
+	}
+	else{
+		if(t.t1 == "-d"){
+			pos = hd->localizaObjeto(hd->getLocalAtual(), nomes.t1, TIPO_PASTA);
+			if(pos){
+				hd->renomear(pos, nomes.t2);
+				cout << "Pasta renomeada\n";
+			}
+			else {
+				cout << "Pasta " << nomes.t1 << " nao encontrada\n";
+			}
+		}
+		else if(t.t1 == "-f"){
+			pos = hd->localizaObjeto(hd->getLocalAtual(), nomes.t1, TIPO_ARQUIVO);
+			if(pos){
+				hd->renomear(pos, nomes.t2);
+				cout << "Arquivo renomeado\n";
+			}
+			else {
+				cout << "Arquivo " << nomes.t1 << " nao encontrado\n";
+			}
+		}
+		else {
+			cout << "Informe corretamento o objeto a ser renomeado\n";
+		}		
+	}
+		
 }
 
 void Comandos::help(){
