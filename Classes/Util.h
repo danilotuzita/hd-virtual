@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <iostream>
 #include <dirent.h>
+#include <stdio.h>
 
 using namespace std;
 

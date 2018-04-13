@@ -33,22 +33,22 @@ class Comandos{
 		int getCodComando(char * nome_comando);
 		split separar(string);
 		
-		// Funcões de comando
-		void create();
-		void format();
-		void remover();
-		void move();
-		void renomear();
-		void df();
-		void cat();
-		
-		void cd();
-		void montaCaminho();
-		
-		void ls();
-		void typehd();
-		
-		void help();
+		// ==== Funcões de comando
+			void create();
+			void format();
+			void remover();
+			void move();
+			void renomear();
+			void df();
+			void cat();
+
+			void cd();
+			void montaCaminho();
+
+			void ls();
+			void typehd();
+
+			void help();
 		
 	public:
 	
@@ -62,6 +62,8 @@ class Comandos{
 		void separarComando();
 		erro validarComando();
 		string getNomeHD();
+		bool getHDSelecionado();
+		void closeHD();
 
 };
 

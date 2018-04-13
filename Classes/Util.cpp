@@ -103,7 +103,7 @@ void Util::listaHDS(){
         while ((directory = readdir(dirp)) != NULL)
         {
 		  if(verificaExtensao(directory->d_name)){
-			printf("%s\n", directory->d_name); 
+			cout << directory->d_name;
 		  }
         }
 

@@ -36,7 +36,6 @@ int main(){
 	
 	//main2();
 	//return 0;
-	
 	system("title HD GAMMA");
 	cout << "FEI [versao 1.0]\n(c) 2018 FEI - CC6270 (Giovanni/Danilo/Guilherme) Todos os direitos reservados.\n\n";
 
@@ -60,6 +59,12 @@ int main(){
 			cout << e.mensagem << endl;
 			system("echo \033[0m");
 			e.status = false;
+		}
+		else {
+			if(linha == "exit" && c.getHDSelecionado()){
+				linha = "";
+				c.closeHD();
+			}
 		}
 	}
 	return 0;

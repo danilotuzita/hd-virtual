@@ -112,7 +112,7 @@ erro Comandos::validarComando(){
     
 	    hdSelecionado = true;
 	    
-	    hd->printHD();
+	    //hd->printHD();
 	}
 	else{
 		if(e0()){
@@ -143,6 +143,19 @@ erro Comandos::validarComando(){
 
 string Comandos::getNomeHD(){
 	return nomeHD + caminho;
+}
+
+bool Comandos::getHDSelecionado(){
+	return hdSelecionado;
+}
+
+void Comandos::closeHD(){
+	if(hdSelecionado){
+		delete hd;
+		nomeHD.clear();
+		caminho.clear();
+        hdSelecionado = false;
+	}
 }
 
 // Funções de comando
@@ -185,6 +198,8 @@ void Comandos::create(){
 				string linha = "";
                 linha.clear();
 				getline(cin, linha);
+                
+                linha = linha.size() == 0 ? " " : linha;
                 
 				int ret = hd->criaArquivo(t.t2, linha);
                 
@@ -311,6 +326,7 @@ void Comandos::format(){
 			if(hdSelecionado){
 				delete hd;
 				nomeHD.clear();
+				hdSelecionado = false;
 			}
 			if(u.hdExiste(t.t1 + ".hd")){
 
@@ -427,7 +443,7 @@ void Comandos::ls(){
 		cout << "Lista de HD'S: \n";
 		u.listaHDS();
 	}
-	else {
+	else if(hdSelecionado){
 		
 		//cout<<"LOCAL: "<<hd->getLocalAtual()<<endl;
 		pasta = hd->abrePasta(hd->getLocalAtual());
