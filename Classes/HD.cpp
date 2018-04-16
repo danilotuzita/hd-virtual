@@ -2,7 +2,7 @@
 
 HD::HD()
 {
-	ultimoBlocoLivre = POS_RAIZ + 1;
+	ultimoBlocoLivre = POS_RAIZ;
 	localAtual = POS_RAIZ;
 }
 
@@ -156,7 +156,7 @@ int HD::criaArquivo(string nome, string dados)
 	int i = getFreeBlock();
 	int primeiroBloco = i;
 	if(i == -1)
-			return -1; // HD ESTÁ SEM ESPAÇO
+			return -1; // HD EST SEM ESPAO
 	
 	while(dados.size())
 	{
@@ -175,7 +175,7 @@ int HD::criaArquivo(string nome, string dados)
 		{
 			int next = getFreeBlock();
 			if(next == -1)
-				return -1; // HD ESTÁ SEM ESPAÇO
+				return -1; // HD EST SEM ESPAO
 			
 			hd[i].setMemoria(next); // o bloco atual aponta para o proximo bloco livre
 			i = next;
