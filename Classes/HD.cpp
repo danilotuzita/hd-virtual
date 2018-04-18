@@ -8,14 +8,8 @@ HD::HD()
 
 HD::~HD()
 {
-	if (fp != NULL) {
-	    for(int i = 0; i < TAM; i++){
-	    	string temp = hd[i].getString(0, MAX_BYTE);
-			fwrite(temp.c_str(), MAX_BYTE, 1, fp);
-		}
-		
-		fclose(fp);
-	}
+	fp = fopen((nome + ".hd").c_str(), "wb");
+	salvaHD();
 }
 
 erro HD::createHD(string n, int t)
@@ -44,6 +38,7 @@ erro HD::createHD(string n, int t)
     raizHD();
     
 	e.status = false;
+	salvaHD();
 	return e;
 }
 
@@ -58,7 +53,8 @@ void HD::raizHD(){
 	hd[POS_RAIZ].setFlag(FLAG_NOME, true);
 	hd[POS_RAIZ].setFlag(FLAG_OCUPADO, true);
 	hd[POS_RAIZ].setFlag(FLAG_TIPO, TIPO_PASTA);
-	hd[POS_RAIZ].setNome("C:");
+	hd[POS_RAIZ].setNome((nome + ":"));
+	ultimoBlocoLivre = POS_RAIZ + 1;
 }
 
 erro HD::openHD(string nomeHD){
@@ -86,10 +82,19 @@ erro HD::openHD(string nomeHD){
 	carregaHD();
 	
 	fclose(fp);
-	fp = fopen(nomeHD.c_str(), "wb");
-
-	return e;
 	
+	return e;
+}
+
+void HD::salvaHD(){
+	if (fp != NULL) {
+	    for(int i = 0; i < TAM; i++){
+	    	string temp = hd[i].getString(0, MAX_BYTE);
+			fwrite(temp.c_str(), MAX_BYTE, 1, fp);
+		}
+
+		fclose(fp);
+	}
 }
 
 erro HD::carregaHD(){

@@ -25,6 +25,7 @@ void Comandos::separarComando(){
 	for(i = 0; (int) comando[i] != 32 && (int) comando[i] != 0 ; i++) {
 		c += comando[i];
 	}
+	
 	i++;
 	for(; comando[i] != 0; i++){
 		parametro += comando[i];
@@ -53,7 +54,7 @@ void Comandos::removeEspacosComeco(){
 
 void Comandos::setComando(string _comando){
 	comando.clear();
-	parametro.clear();
+	parametro = "";
 	n = 0;
 	c.clear();
 	comando = _comando;
@@ -155,6 +156,9 @@ void Comandos::closeHD(){
 		nomeHD.clear();
 		caminho.clear();
         hdSelecionado = false;
+        n = 0;
+		c.clear();
+		hd = new HD;
 	}
 }
 
@@ -180,7 +184,8 @@ void Comandos::create(){
 					erro e;
 					e = hd->createHD(a.t1, atoi(a.t2.c_str()));
 					if(!e.status){
-						cout << "HD " << a.t1 << " criado com sucesso (tamanho: " << atoi(a.t2.c_str()) * MAX_BYTE << " bytes)" << endl;
+						cout << "HD " << a.t1 << " criado com sucesso (tamanho: " << atoi(a.t2.c_str()) * _1KB << " bytes)" << endl;
+						nomeHD = a.t1;
 						hdSelecionado = true;
 					} else {
 						cout << "Erro: " << e.mensagem << endl;
@@ -259,6 +264,7 @@ void Comandos::remover(){
 					delete hd;
 					nomeHD.clear();
 					hdSelecionado = false;
+					hd = new HD();
 				}
 				string nome = t.t2 + ".hd"; 
 				if( remove( nome.c_str() ) != 0 ){
@@ -340,12 +346,18 @@ void Comandos::format(){
 		        
 		        hd = new HD;
 		        hd->createHD(t.t1, tamanho);
-		    	nomeHD = t.t1;
+		        
+		        delete hd;
+				nomeHD = t.t1;
+				
+		        hd = new HD;
+		        hd->openHD(nomeHD);
 		    	
 			    hdSelecionado = true;
 				
 			}
 			else{
+				hd = new HD;
 				cout << "HD " << t.t2 << " nao encontrado" << endl;
 			}
 		}
@@ -503,24 +515,8 @@ void Comandos::renomear(){
 }
 
 void Comandos::typehd(){
-	
-	if(hdSelecionado){
-		delete hd;
-		nomeHD.clear();
-	}
-	if(u.hdExiste(getParametros() + ".hd")){
-
-        hd = new HD;
-        hd->openHD(getParametros());
-        
-    	nomeHD = getParametros();
-    	
-	    hd->printHD();
-		
-	}
-	else{
-		cout << "HD " << getParametros() << " nao encontrado" << endl;
-	}
+	if(hdSelecionado) hd->printHD();
+	else cout << "Selecione um HD\n";
 }
 
 void Comandos::help(){

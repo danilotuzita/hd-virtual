@@ -76,7 +76,9 @@ class HD
 	private:
 		vector<Bloco> hd;
 		string nome;
+
 		FILE* fp;
+		
 		int TAM;
 		Util u;
 		
@@ -90,6 +92,8 @@ class HD
 		void recalEspacosLivres();
 		
 		erro criarConteudo(string, string, bool);
+		
+		void salvaHD();
 };
 
 
