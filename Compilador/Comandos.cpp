@@ -158,7 +158,7 @@ void Comandos::closeHD(){
 	}
 }
 
-// Funções de comando
+// Funes de comando
 
 void Comandos::create(){
 	t = separar(getParametros());
@@ -439,7 +439,7 @@ void Comandos::ls(){
 	unsigned int pos;
 	queue<unsigned int> pasta;
 	
-	if(t.t1 == "-h"){
+	if(t.t1 == "-hd"){
 		cout << "Lista de HD'S: \n";
 		u.listaHDS();
 	}
