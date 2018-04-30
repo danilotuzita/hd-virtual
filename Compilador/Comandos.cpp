@@ -132,6 +132,7 @@ erro Comandos::validarComando(){
 		}
 		else{
 			e.status = true;
+			e.mensagem = "Comando nao reconhecido:\n" + getComandoCompleto() + "\n";
 			for(int i = 0; i < n - 1; i++){
 				e.mensagem += "_";
 			}
@@ -194,6 +195,7 @@ void Comandos::create(){
 			}
 		}
 		else if(t.t1 == "-f"){
+			hd->setUndo(0);
 			if(t.t2 == ""){
 				e.mensagem = "Informe o nome do arquivo";
 				e.status = true;
@@ -208,16 +210,18 @@ void Comandos::create(){
                 
 				int ret = hd->criaArquivo(t.t2, linha);
                 
-				hd->addPasta(hd->getLocalAtual(), ret);
+				e = hd->addPasta(hd->getLocalAtual(), ret);
                 
-				if(ret != -1){
+				if(!e.status){
 					cout << "Arquivo " << t.t2 << " gravado com sucesso!" << endl;
-				} else {
-					cout << "Erro: " << e.mensagem << endl;
 				}
+//				else {
+//					cout << "Erro: " << e.mensagem << endl;
+//				}
 			}
 		}
 		else if(t.t1 == "-d"){
+			hd->setUndo(0);
 	        if(t.t2 == ""){
 				e.mensagem = "Informe o nome da pasta";
 				e.status = true;
@@ -225,13 +229,14 @@ void Comandos::create(){
 			else {
                 
 				int ret = hd->criaPasta(t.t2);
-                hd->addPasta(hd->getLocalAtual(), ret);
+                e = hd->addPasta(hd->getLocalAtual(), ret);
 				
-				if(ret != -1){
+				if(!e.status){
 					cout << "Pasta " << t.t2 << " criada com sucesso!" << endl;
-				} else {
-					cout << "Erro: " << e.mensagem << endl;
-				}				
+				} 
+//				else {
+//					cout << "Erro: " << e.mensagem << endl;
+//				}				
 			}
 		}
 		else{
@@ -487,28 +492,31 @@ void Comandos::renomear(){
 		cout << "Informe o novo nome\n";
 	}
 	else{
+		int loc = hd->getLocalAtual();
 		if(t.t1 == "-d"){
-			pos = hd->localizaObjeto(hd->getLocalAtual(), nomes.t1, TIPO_PASTA);
+			pos = hd->localizaObjeto(loc, nomes.t1, TIPO_PASTA);
 			if(pos){
-				hd->renomear(pos, nomes.t2);
-				cout << "Pasta renomeada\n";
+				e = hd->renomear(loc, pos, nomes.t2);
+				if(!e.status)
+					cout << "Pasta renomeada\n";
 			}
 			else {
 				cout << "Pasta " << nomes.t1 << " nao encontrada\n";
 			}
 		}
 		else if(t.t1 == "-f"){
-			pos = hd->localizaObjeto(hd->getLocalAtual(), nomes.t1, TIPO_ARQUIVO);
+			pos = hd->localizaObjeto(loc, nomes.t1, TIPO_ARQUIVO);
 			if(pos){
-				hd->renomear(pos, nomes.t2);
-				cout << "Arquivo renomeado\n";
+				e = hd->renomear(loc, pos, nomes.t2);
+				if(!e.status)
+					cout << "Arquivo renomeado\n";
 			}
 			else {
 				cout << "Arquivo " << nomes.t1 << " nao encontrado\n";
 			}
 		}
 		else {
-			cout << "Informe corretamento o objeto a ser renomeado\n";
+			cout << "Informe corretamente o objeto a ser renomeado\n";
 		}		
 	}
 		

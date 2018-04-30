@@ -159,9 +159,11 @@ int HD::getFreeBlock()
 int HD::criaArquivo(string nome, string dados)
 {
 	int i = getFreeBlock();
+	hd[i].clearDados();
+	
 	int primeiroBloco = i;
 	if(i == -1)
-			return -1; // HD EST SEM ESPAO
+		return -1; // HD ESTA SEM ESPACO
 	
 	while(dados.size())
 	{
@@ -180,15 +182,59 @@ int HD::criaArquivo(string nome, string dados)
 		{
 			int next = getFreeBlock();
 			if(next == -1)
-				return -1; // HD EST SEM ESPAO
+			{	
+				deletaArquivo(primeiroBloco);
+				return -1; // HD ESTA SEM ESPACO
+			}
 			
 			hd[i].setMemoria(next); // o bloco atual aponta para o proximo bloco livre
 			i = next;
 		}
 	}
-	//cout<<endl;
 	
 	return primeiroBloco;
+}
+
+int HD::validaNome(unsigned int pai, unsigned int filho)
+{
+	queue<unsigned int> filhos = abrePasta(pai);
+	
+	bool tipo = getTipo(filho);
+	string nome = getNome(filho);
+	
+	while(!filhos.empty())
+	{
+		unsigned int i = filhos.front();
+		filhos.pop();
+		
+		if(getTipo(i) == tipo)
+			if(getNome(i) == nome)
+				return 0; // já existe um arquivo com esse nome
+				
+		if(i == filho)
+			return -1;    // o arquivo já é filho dessa pasta
+	}
+	
+	return 1;             // o arquivo pode ser linkado a essa pasta
+}
+
+int HD::validaNome(unsigned int pai, bool tipo, string nome)
+{
+	queue<unsigned int> filhos = abrePasta(pai);
+	
+	nome.resize(NOME_SIZE);
+	
+	while(!filhos.empty())
+	{
+		unsigned int i = filhos.front();
+		filhos.pop();
+		
+		if(getTipo(i) == tipo)
+			if(getNome(i) == nome)
+				return 0; // já existe um arquivo com esse nome			
+	}
+	
+	return 1;             // o arquivo pode ser linkado a essa pasta
 }
 
 string HD::leArquivo(unsigned int pos)
@@ -214,6 +260,7 @@ int HD::criaPasta(string nome)
 	if(i == -1)
 		return -1;
 	
+	hd[i].clearDados();
 	hd[i].setFlag(FLAG_NOME, true);
 	hd[i].setFlag(FLAG_OCUPADO, true);
 	hd[i].setFlag(FLAG_TIPO, TIPO_PASTA);
@@ -222,10 +269,55 @@ int HD::criaPasta(string nome)
 	return i;
 }
 
-void HD::addPasta(unsigned int pai, unsigned int filho)
+int HD::criaPasta()
 {
+	int i = getFreeBlock();
+	if(i == -1)
+		return -1;
+	
+	hd[i].clearDados();
+	hd[i].setFlag(FLAG_NOME, false);
+	hd[i].setFlag(FLAG_OCUPADO, true);
+	hd[i].setFlag(FLAG_TIPO, TIPO_PASTA);
+	
+	return i;
+}
+
+erro HD::addPasta(unsigned int pai, unsigned int filho)
+{
+	erro e;
+	e.status = false;
+	e.mensagem = "";
+	switch(validaNome(pai, filho))
+	{
+		case -1:
+			e.mensagem = "Arquivo/Pasta ja esta na pasta";
+			e.status = true;
+			return e;
+			
+		case  0: // já existe um aquivo com esse nome
+			deletaArquivo(filho);
+			e.mensagem = "Ja existe um aquivo/pasta com esse nome";
+			e.status = true;
+			return e;
+	}
+	
 	if(hd[pai].isFolder())
-		hd[pai].setInt(hd[pai].getFreeSpace(), filho);
+	{
+		while(hd[pai].getMemoria())      // vai para o ultimo link
+			pai = hd[pai].getMemoria();
+		
+		int pos = hd[pai].getFreeSpace();
+		if(pos == -1)
+		{
+			hd[pai].setMemoria(criaPasta());
+			pai = hd[pai].getMemoria();
+			pos = hd[pai].getFreeSpace();
+		}
+		
+		hd[pai].setInt(pos, filho);
+	}
+	return e;
 }
 
 queue<unsigned int> HD::abrePasta(unsigned int pai)
@@ -234,21 +326,17 @@ queue<unsigned int> HD::abrePasta(unsigned int pai)
 	
 	do
 	{
-		int i;
-		if(hd[pai].temNome())
-			i = DADOS_BYTE;
-		else
-			i = NOME_BYTE;
+		int i = hd[pai].handleBytePos();
 		
-		for(; i < MAX_BYTE; i += 4)
+		for(i; i < MAX_BYTE; i += 4)
 		{
 			unsigned int temp = hd[pai].getInt(i);
 			if(temp)
 				pastas.push(temp);
 		}
 		
-		pai = hd[pai].getInt(MP_BYTE);
-	}while(hd[pai].getMemoria() && pai);
+		pai = hd[pai].getMemoria();
+	}while(pai);
 	
 	return pastas;
 }
@@ -257,7 +345,7 @@ void HD::deletaArquivo(unsigned int bloco)
 {
 	if(bloco > TAM || !hd[bloco].temNome() || hd[bloco].isFree() || hd[bloco].isFolder())
 		return;
-
+	
 	while(bloco)
 	{
 		int next = hd[bloco].getMemoria();
@@ -273,11 +361,7 @@ void HD::deletaRef(unsigned int bloco, unsigned int ref)
 	
 	while(bloco)
 	{
-		int i;
-		if(hd[bloco].temNome())
-			i = DADOS_BYTE;
-		else
-			i = NOME_BYTE;
+		int i = hd[bloco].handleBytePos();
 			
 		for(; i < MAX_BYTE; i += 4)
 		{
@@ -296,15 +380,11 @@ void HD::deletaPasta(unsigned int bloco)
 {
 	if(bloco > TAM || !hd[bloco].temNome() || hd[bloco].isFree() || !hd[bloco].isFolder())
 		return;
-		
+	
 	while(bloco)
 	{
-		int byte;
-		if(hd[bloco].temNome())
-			byte = DADOS_BYTE;
-		else
-			byte = NOME_BYTE;
-			
+		int byte = hd[bloco].handleBytePos();
+		
 		for(; byte < MAX_BYTE; byte += 4)
 		{
 			int filho = hd[bloco].getInt(byte);
@@ -319,12 +399,20 @@ void HD::deletaPasta(unsigned int bloco)
 
 void HD::deleta(unsigned int pai, unsigned int filho)
 {
-	deletaRef(pai, filho);
+	if(!getUndo())
+	{
+		setUndo(pai);
+		deletaRef(pai, filho);
+		
+		while(!desfaz.empty())
+			desfaz.pop();
+	}
 	deleta(filho);
 }
 
 void HD::deleta(unsigned int bloco)
 {
+	desfaz.push(bloco);
 	if(getTipo(bloco) == TIPO_PASTA)
 		deletaPasta(bloco);
 	else
@@ -333,8 +421,60 @@ void HD::deleta(unsigned int bloco)
 	recalEspacosLivres();
 }
 
-void HD::renomear(unsigned int bloco, string novoNome){
-	hd[bloco].setNome(novoNome);
+erro HD::undo()
+{
+	erro e;
+	e.status = true;
+	e.mensagem = "Nao e possivel desfazer a remocao\n";	
+	
+	if(!ctrlz)
+		return e;
+	
+	int bloco;
+	while(!desfaz.empty())
+	{
+		bloco = desfaz.front();
+		desfaz.pop();
+		if(ctrlz)
+		{
+			addPasta(ctrlz, bloco);
+			setUndo(0);
+		}	
+		
+		hd[bloco].setFlag(FLAG_OCUPADO, true);
+	}
+	
+	e.status = false;
+	return e;	
+}
+
+void HD::setUndo(unsi value)
+{
+	ctrlz = value;
+}
+
+unsi HD::getUndo()
+{
+	return ctrlz;
+}
+
+erro HD::renomear(unsigned int pai, unsigned int bloco, string novoNome){
+	erro e;
+	e.status = false;
+	e.mensagem = "";
+	switch(validaNome(pai, getTipo(bloco), novoNome))
+	{
+		case 0: // já existe um aquivo com esse nome
+			e.mensagem = "Ja existe um aquivo/pasta com esse nome";
+			e.status = true;
+			break;
+			
+		case 1:
+			hd[bloco].setNome(novoNome);
+			break;
+	}
+	
+	return e;
 }
 
 int HD::localizaObjeto(unsigned int pai, string filho, bool tipo){
@@ -350,11 +490,9 @@ int HD::localizaObjeto(unsigned int pai, string filho, bool tipo){
 		if(getTipo(pos) == tipo){
 			if(u.compString(filho.c_str(), getNome(pos).c_str())){
 				retorno = pos;
-			}
-						
+			}	
 		}
 		pasta.pop();
-	
 	}
 	
 	return retorno;
@@ -387,7 +525,7 @@ void HD::propriedadesHD(string * mensagem){
 	mensagem[1] = "Tamanho: " + u.itos((int)hd[POS_HEADER].getInt(BYTE_HEADER_TAMANHO)) + "kb";
 }
 
-int HD::getTamanho(){
+unsi HD::getTamanho(){
 	return TAM;
 }
 
@@ -411,7 +549,7 @@ void HD::printChain(int pos)
 	}while(next);
 }
 
-void HD::printHD()
+void HD::printHD(bool tipo)
 {
 	for(int i = 1; i < TAM; i++)
 	{
@@ -419,6 +557,19 @@ void HD::printHD()
 		{
 			cout<<"BLOCO "<<i<<": \n";
 			printChain(i);
+		}
+	}
+}
+
+void HD::printHD()
+{
+	for(int i = 1; i < TAM; i++)
+	{
+		if(!hd[i].isFree())
+		{
+			cout<<"BLOCO "<<i<<": \n";
+			hd[i].printBloco();
+			cout<<endl;
 		}
 	}
 }
@@ -435,7 +586,7 @@ bool HD::getTipo(unsigned int pos)
 }
 
 // posicoes
-int HD::getLocalAtual(){
+unsi HD::getLocalAtual(){
 	return localAtual;
 }
 

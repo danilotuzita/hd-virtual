@@ -21,6 +21,8 @@
 #define POS_HEADER 0
 #define POS_RAIZ 1
 
+#define unsi unsigned int
+
 class HD
 {
 	public:
@@ -34,8 +36,13 @@ class HD
 		
 		// ARQUIVOS
 		int getFreeBlock();
+		int validaNome(unsigned int, unsigned int);
+		int validaNome(unsigned int, bool, string);
 		void deleta(unsigned int);
 		void deleta(unsigned int, unsigned int);
+		void setUndo(unsi);
+		unsi getUndo();
+		erro undo();
 		
 			// arquivo
 			int criaArquivo(string, string);
@@ -43,14 +50,14 @@ class HD
 			void deletaArquivo(unsigned int);
 			
 			// pasta
+			int criaPasta();
 			int criaPasta(string);
-			void addPasta(unsigned int);
-			void addPasta(unsigned int, unsigned int);
-			queue<unsigned int> abrePasta(unsigned int);
+			erro addPasta(unsigned int, unsigned int);
+			queue<unsi> abrePasta(unsigned int);
 			void deletaPasta(unsigned int);
 			void deletaRef(unsigned int, unsigned int);
 			
-			void renomear(unsigned int, string);
+			erro renomear(unsigned int, unsigned int, string);
 			
 			/* localiza arquivo ou pasta dentro de uma pasta 
 			e retorna a posicao*/
@@ -58,19 +65,20 @@ class HD
 		
 		// UTIL
 		void propriedadesHD(string *);
-		int getTamanho();
+		unsi getTamanho();
 		
 			// print
 			void print(int);
 			void printChain(int);
 			void printHD();
+			void printHD(bool);
 			
 			// get
 			string getNome(unsigned int);
 			bool getTipo(unsigned int);
 			
 			// posições
-			int getLocalAtual();
+			unsi getLocalAtual();
 			void setLocalAtual(unsigned int);
 		
 	private:
@@ -79,20 +87,22 @@ class HD
 
 		FILE* fp;
 		
-		int TAM;
+		unsi TAM;
 		Util u;
 		
-		int localAtual;
+		unsi localAtual;
 		
-		int ultimoBlocoLivre;
-		queue<int> blocosLivres;
+		unsi ultimoBlocoLivre;
+		queue<unsi> blocosLivres;
+		queue<unsi> desfaz;
+		unsi ctrlz;
 		
 		void headHD();
 		void raizHD();
 		void recalEspacosLivres();
 		
-		erro criarConteudo(string, string, bool);
-		
+//		erro criarConteudo(string, string, bool);
+
 		void salvaHD();
 };
 

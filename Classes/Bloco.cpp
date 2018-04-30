@@ -69,13 +69,18 @@ void Bloco::printBloco()
 	cout<<endl;
 }
 
+void Bloco::clearDados()
+{
+	b.reset();
+}
+
 // BIT
 bool Bloco::setBit(int bit, bool value)
 {
 	if(bit >= MAX_BIT)
 	{
 		if(omitBErr == false)
-			cout<<"ERRO(Bloco.setBit: IMPOSSIVEL ACESSAR O BIT "<<bit;
+			cout<<"ERRO(Bloco.setBit): IMPOSSIVEL ACESSAR O BIT!!!"<<bit<<endl;
 		return false;
 	}
 	b[bit] = value;
@@ -87,7 +92,7 @@ bool Bloco::getBit(int bit)
 	if(bit >= MAX_BIT)
 	{
 		if(omitBErr == false)
-			cout<<"ERRO(Bloco.setBit: IMPOSSIVEL ACESSAR O BIT "<<bit<<"!!!\n";
+			cout<<"ERRO(Bloco.setBit): IMPOSSIVEL ACESSAR O BIT "<<bit<<"!!!\n";
 		return false;
 	}
 	return b[bit];
@@ -204,15 +209,28 @@ unsigned int Bloco::getInt(int byte)
 
 int Bloco::getFreeSpace()
 {
-	int i;
-	if(temNome())
-		i = DADOS_BYTE;
-	else
-		i = NOME_BYTE;
+	int i = handleBytePos();
 
 	for(i; i < MAX_BYTE; i += 4)
 		if(getInt(i) == 0)
 			return i;
+	
+	return -1;
+}
+
+int Bloco::handleBytePos()
+{
+	int ret;
+	if(temNome())
+		ret = DADOS_BYTE;
+	else
+		ret = NOME_BYTE;
+		
+//	cout<<ret<<" + "<<(4 - (ret % 4));
+	if(ret % 4)
+		ret = ret + (4 - (ret % 4));
+//	cout<<" = handleByte: "<<ret<<endl;
+	return ret;	
 }
 
 // ----------------------------------------------// --- // ----------------------------------------------//

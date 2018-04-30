@@ -57,7 +57,7 @@ class Bloco
 			void setInt(int, unsigned int);
 			unsigned int getInt(int);
 			int getFreeSpace();
-		
+			int handleBytePos();
 		
 		//UTILS
 		void printByte(int);
@@ -66,6 +66,7 @@ class Bloco
 		
 		void printBloco();
 		
+		void clearDados();
 		
 		//MEMORIA
 		void setMemoria(int);
