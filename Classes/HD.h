@@ -35,32 +35,38 @@ class HD
 		erro carregaHD();
 		
 		// ARQUIVOS
-		int getFreeBlock();
+		unsi getFreeBlock();
 		int validaNome(unsigned int, unsigned int);
 		int validaNome(unsigned int, bool, string);
-		void deleta(unsigned int);
-		void deleta(unsigned int, unsigned int);
-		void setUndo(unsi);
-		unsi getUndo();
-		erro undo();
 		
+			// remoção
+			void deleta(unsigned int);
+			void deleta(unsigned int, unsigned int);
+			void deletaRef(unsigned int, unsigned int);
+			
+			erro undo();        // desfaz ultimo deleta
+			void setUndo(unsi); // setcrtlz
+			unsi getUndo();     // getcrtlz
+		
+			// copia
+			unsi copy(unsigned int);
+			unsi copiaPasta(unsigned int);
+			unsi copiaArquivo(unsigned int);
+			
 			// arquivo
-			int criaArquivo(string, string);
+			unsi criaArquivo(string, string);
 			string leArquivo(unsigned int);
 			void deletaArquivo(unsigned int);
 			
 			// pasta
-			int criaPasta();
-			int criaPasta(string);
+			unsi criaPasta();
+			unsi criaPasta(string);
 			erro addPasta(unsigned int, unsigned int);
 			queue<unsi> abrePasta(unsigned int);
 			void deletaPasta(unsigned int);
-			void deletaRef(unsigned int, unsigned int);
 			
+			// util
 			erro renomear(unsigned int, unsigned int, string);
-			
-			/* localiza arquivo ou pasta dentro de uma pasta 
-			e retorna a posicao*/
 			int localizaObjeto(unsigned int, string, bool);
 		
 		// UTIL
@@ -101,8 +107,6 @@ class HD
 		void raizHD();
 		void recalEspacosLivres();
 		
-//		erro criarConteudo(string, string, bool);
-
 		void salvaHD();
 };
 

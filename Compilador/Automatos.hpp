@@ -294,6 +294,7 @@ bool c0(){
 			if(c[m] == 'h') return c1();
 			else if(c[m] == 'f') return c2();
 			else if(c[m] == 'd') return c2();
+			else if(c[m] == 'u') return c2();
 			else return false;
 		}
 		else if(c[m] == '?') return c2();

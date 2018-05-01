@@ -41,7 +41,7 @@ class Util
 		bool hdExiste(string);
 		
 		void printHex(bitset<8>);
-		void printChar(bitset<8>);
+		void printChar(bitset<8>);	
 		
 		string trim(string);
 		

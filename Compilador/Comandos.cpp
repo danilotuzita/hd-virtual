@@ -117,18 +117,18 @@ erro Comandos::validarComando(){
 	}
 	else{
 		if(e0()){
-	        if(getComando() == "clear") system("cls");
+	             if(getComando() == "clear")  system("cls");
 			else if(getComando() == "create") create();
 			else if(getComando() == "remove") remover();
 			else if(getComando() == "format") format();
-			else if(getComando() == "move") move();
-			else if(getComando() == "df") df();
-			else if(getComando() == "cat") cat();
-	 		else if(getComando() == "cd") cd();
-			else if(getComando() == "ls") ls();
+			else if(getComando() == "move")   move();
+			else if(getComando() == "df")     df();
+			else if(getComando() == "cat")    cat();
+	 		else if(getComando() == "cd")     cd();
+			else if(getComando() == "ls")     ls();
 			else if(getComando() == "rename") renomear();
 			else if(getComando() == "typehd") typehd();
-			else if(getComando() == "?") help();
+			else if(getComando() == "?")      help();
 		}
 		else{
 			e.status = true;
@@ -236,7 +236,7 @@ void Comandos::create(){
 				} 
 //				else {
 //					cout << "Erro: " << e.mensagem << endl;
-//				}				
+//				}
 			}
 		}
 		else{
@@ -311,6 +311,16 @@ void Comandos::remover(){
 					cout << "\nPasta " << t.t2 << " nao encontrada" << endl;
 				}
 			}
+		}
+		else if(t.t1 == "-u"){
+			if(t.t2.size()){
+				e.mensagem = "Esse comando nao tem parametro";
+				e.status = true;
+				return;
+			}
+			e = hd->undo();
+			if(!e.status)
+				cout << "Desfazer completo\n";
 		}
 		else{
 			cout << "Comando para remover de coisas no hd e bla bla bla bla \n";
@@ -469,7 +479,7 @@ void Comandos::ls(){
 		{
 			pos = pasta.front();
 			if(hd->getTipo(pos) == TIPO_PASTA) cout << "/";
-			cout << hd->getNome(pos) << " | ";
+			cout << hd->getNome(pos)<< " | ";
 			pasta.pop();
 		}
 		cout << endl;

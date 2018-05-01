@@ -126,7 +126,10 @@ string Util::trim(string entrada)
 {
 	string retorno = "";
 	for(int i = 0; entrada[i]; i++)
-		retorno += entrada[i];
+	{
+//		cout<<(int)entrada[i]<<endl;
+		retorno += entrada[i];		
+	}
 	return retorno;
 }
 

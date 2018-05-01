@@ -14,20 +14,20 @@ void main2()
 	int a = hd.criaPasta("a");
 	int b = hd.criaArquivo("b", arq2);
 	int c = hd.criaPasta("c");
+	int p = hd.criaPasta("cop");
 	
 	
 	hd.addPasta(1, d);
+	hd.addPasta(1, p);
 	hd.addPasta(d, a);
 	hd.addPasta(a, c);
 	hd.addPasta(d, b);
 	hd.printHD();
 	system("PAUSE");
 	
-	hd.deleta(1, d);
-	hd.printHD();
-	system("PAUSE");
+	int copia = hd.copy(d);
+	hd.addPasta(1, copia);
 	
-	hd.undo();
 	hd.printHD();
 	system("PAUSE");
 }
@@ -35,8 +35,8 @@ void main2()
 
 int main(){
 	
-	main2();
-	return 0;
+//	main2();
+//	return 0;
 	system("title HD GAMMA");
 	cout << "FEI [versao 1.0]\n(c) 2018 FEI - CC6270 (Giovanni/Danilo/Guilherme) Todos os direitos reservados.\n\n";
 
