@@ -44,6 +44,7 @@ class Util
 		void printChar(bitset<8>);	
 		
 		string trim(string);
+		split separar(string, char);
 		
 	private:
 };

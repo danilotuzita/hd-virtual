@@ -128,7 +128,10 @@ erro Comandos::validarComando(){
 			else if(getComando() == "ls")     ls();
 			else if(getComando() == "rename") renomear();
 			else if(getComando() == "typehd") typehd();
+			else if(getComando() == "copy")   copy();
 			else if(getComando() == "?")      help();
+			else if(getComando() == "skol")   skol();
+			else if(getComando() == "fei")    fei();
 		}
 		else{
 			e.status = true;
@@ -430,6 +433,7 @@ void Comandos::cd(){
 		}
 	}
 	else{
+		hd->clearTrilha();
 		pos = hd->localizaObjeto(hd->getLocalAtual(), getParametros(), TIPO_PASTA);
 	
 		if(!pos){
@@ -438,6 +442,7 @@ void Comandos::cd(){
 		else {
 			//cout<<"LOCAL: "<<pos<<endl;
 			hd->setLocalAtual(pos);
+			trilha = hd->getTrilha();
 			trilha.push_back(pos);
 			montaCaminho();
 		}
@@ -537,7 +542,92 @@ void Comandos::typehd(){
 	else cout << "Selecione um HD\n";
 }
 
+void Comandos::copy(){
+	t = separar(getParametros());
+
+	unsigned int origem, destino;
+
+	if(t.t1 == "-d"){
+
+		split nomes;
+		nomes = separar(t.t2);
+		if(nomes.t1 == ""){
+	        e.mensagem = "Informe o nome da pasta\n";
+			e.status = true;
+		}
+		else {
+            if(nomes.t2 == ""){
+		        e.mensagem = "Informe o destino\n";
+				e.status = true;
+			}
+			else{
+				origem = hd->localizaObjeto(hd->getLocalAtual(), nomes.t1, TIPO_PASTA);
+				destino = hd->localizaObjeto(hd->getLocalAtual(), nomes.t2, TIPO_PASTA);
+				if(origem == 0){
+                    e.mensagem = "Pasta nao localizada\n";
+					e.status = true;
+				}
+				else if(destino == 0){
+                    e.mensagem = "Destino nao localizado\n";
+					e.status = true;
+				}
+				else{
+					int copia = hd->copy(origem);
+					hd->addPasta(destino, copia);
+					cout << "Pasta copiada\n";
+				}
+			}
+		}
+
+	}
+	else if(t.t1 == "-f"){
+		split nomes;
+		nomes = separar(t.t2);
+		if(nomes.t1 == ""){
+	        e.mensagem = "Informe o nome do arquivo\n";
+			e.status = true;
+		}
+		else {
+            if(nomes.t2 == ""){
+		        e.mensagem = "Informe o destino\n";
+				e.status = true;
+			}
+			else{
+				origem = hd->localizaObjeto(hd->getLocalAtual(), nomes.t1, TIPO_ARQUIVO);
+				destino = hd->localizaObjeto(hd->getLocalAtual(), nomes.t2, TIPO_PASTA);
+				if(origem == 0){
+                    e.mensagem = "Arquivo nao localizado\n";
+					e.status = true;
+				}
+				else if(destino == 0){
+                    e.mensagem = "Destino nao localizado\n";
+					e.status = true;
+				}
+				else{
+					int copia = hd->copy(origem);
+					hd->addPasta(destino, copia);
+					cout << "Arquivo copiado\n";
+				}
+			}
+		}
+	}
+	else {
+        e.mensagem = "Parametro nao reconhecido\n";
+		e.status = true;
+	}
+}
+
 void Comandos::help(){
 	t = separar(getParametros());
 	cout << "Ajuda do parametro " << t.t1 << endl;
+}
+
+void Comandos::skol()
+{
+	printf("------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------:://///::----:::::-------:::::----::////::--------::::::----------------------------------------------\n---------------------------------------------:+oooooooooo+--/ooooo/----/oooo+:-/+oooooooooo+:-----oooooo----------------------------------------------\n--------------------------------------------+oooo/----:/o:--+ooooo:--/ooooo:-/ooooo+++ooooooo+---:ooooo+----------------------------------------------\n-------------------------------------------/ooooo/----------ooooo+-:ooooo/-:ooo+:------:oooooo+--/ooooo:----------------------------------------------\n-------------------------------------------:ooooooo/-------/ooooo/+oooo/--:oo+----------:oooooo--ooooo+-----------------------------------------------\n--------------------------------------------/oooooooo+:----oooooooooo+----+o/-----------:oooooo-/ooooo/-----------------------------------------------\n----------------------------------------------/+ooooooo+--:ooooooooooo/---oo--------::-:oooooo/-oooooo------------------------------------------------\n------------------------------------------------:/oooooo:-+ooooo:+ooooo/--+/------/oo:+oooooo+-:ooooo/------------------------------------------------\n------------------------------------------//------+ooooo::ooooo+--+ooooo/--/---:+ooooooooooo/--+ooooo----::/:-----------------------------------------\n------------------------------------------ooo/:::/ooooo/-+ooooo:---+ooooo+---/oooooooooooo/---:oooooooooooo/------------------------------------------\n-----------------------------------------/ooooooooooo+:-/oooooo-----/oooooo:-:+ooooooo+/:-----+ooooooooooo/-------------------------------------------\n--------------------------------------------:::::::-------------------://///:---:+oooo/---------------------------------------------------------------\n------------------------------------------------------------------------------------:::/--------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+}
+
+void Comandos::fei()
+{
+	printf("           `.:/++ooooooooooooooo++/:-`           `-:/+ooooooooooooooo++/:.`            `-:/++oooo+/. \n       .:ossssssssssssssssssssssssssso/-    `-+ssssssssssssssssssssssssssso/.      -/osssssssssssss/\n     -ossssssssssssssssssssssssssssssssso:./ssssssssssssssssssssssssssssssssso: `/ssssssssssssssssss\n   .osssssssso/:----------------/+sssssssssssssssso/:---------------:/+ssssssssosssssssss+/:-/ssssss\n  :sssssss+-`                      ./ssssssssss+-`                      ./ssssssssssss:.     -ssssss\n /ssssss+.                           `/sssssso.                           `/ssssssss:        -ssssss\n-ssssss/                               :ssss/                               :ssssss.         -ssssss\nossssso                                 +sso                                 +ssss-          -ssssss\nssssss:                                 -ss:                                 -ssss           -ssssss\nssssss-           sssssssssssssssssssssssss-           ossssssssssssssssssssssssss           -ssssss\nssssss-           ossssssssssssssssssssssss-           +ooooooosssssssssssssssssss           -ssssss\nssssss-                    ``.:+sssssssssss-                     `-/ssssssssssssss           -ssssss\nssssss-                         `:sssssssss-                         -osssssssssss           -ssssss\nssssss-                           `/sssssss-                           /ssssssssss           -ssssss\nssssss-                             /ssssss-                            /sssssssss           -ssssss\nssssss-                             `ssssss-                            `sssssssss           -ssssss\nssssss-           -------------------osssss-           ::::::::::::::::::sssssssss           -ssssss\nssssss-           sssssssssssssssssssssssss-           ossssssssssssssssssssssssss           -ssssss\nssssss-           sssssssssssssssssssssssss-           ossssssssssssssssssssssssss           -ssssss\nssssss-           sssssssoooooooooooossssss-           ossssssssssssssssssssssssss           -ssssss\nssssss-           ssssss:           `ssssss:           `````````````..:/osssssssss           :ssssss\nssssss-          .ssssss.            ossssso                             ./sssssss           +ssssso\nssssss-         `osssss+             -ssssss/                              .osssss          :ssssss:\nssssss-        -sssssss`              +ssssss+`                             `+ssss        `/ssssss+ \nssssss-     `-+sssssso.                +sssssss/.                            `ssss      `/sssssss+` \nssssss:..-:+ssssssss+`                  :sssssssso/:.........................`osss`.-:/ossssssss:   \nssssssssssssssssss+.                     `/sssssssssssssssssssssssssssssssssssssssssssssssssss/`    \n+sssssssssssssso:`                         `-+sssssssssssssssssssssssssssssssssssssssssssss+-`      \n :+sssssso+/:-`                                .-/+oosssssssssssssssssssssssssssssssso+/-.          \n");
 }

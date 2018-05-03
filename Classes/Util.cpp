@@ -133,3 +133,18 @@ string Util::trim(string entrada)
 	return retorno;
 }
 
+split Util::separar(string texto, char sep){
+	int i;
+	split t;
+	t.t1.clear();
+	t.t2.clear();
+
+	for(i = 0; texto[i] != sep && (int) texto[i] != 0 ; i++) {
+		t.t1 += texto[i];
+	}
+	i++;
+	for(; i < texto.size(); i++){
+		t.t2 += texto[i];
+	}
+	return t;
+}

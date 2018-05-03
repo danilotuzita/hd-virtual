@@ -41,6 +41,7 @@ class Comandos{
 			void renomear();
 			void df();
 			void cat();
+			void copy();
 
 			void cd();
 			void montaCaminho();
@@ -49,6 +50,8 @@ class Comandos{
 			void typehd();
 
 			void help();
+			void skol();
+			void fei();
 		
 	public:
 	

@@ -72,6 +72,8 @@ class HD
 		// UTIL
 		void propriedadesHD(string *);
 		unsi getTamanho();
+		void clearTrilha();
+		vector<unsi> getTrilha();
 		
 			// print
 			void print(int);
@@ -97,7 +99,8 @@ class HD
 		Util u;
 		
 		unsi localAtual;
-		
+		vector<unsigned int> trilha;
+
 		unsi ultimoBlocoLivre;
 		queue<unsi> blocosLivres;
 		queue<unsi> desfaz;

@@ -30,6 +30,12 @@ bool e28();
 bool e29();
 bool e30();
 bool e31();
+bool e32();
+bool e33();
+bool e34();
+bool e35();
+bool e36();
+bool e37();
 
 bool c0();
 bool c1();
@@ -54,6 +60,7 @@ bool e0(){
 		else if(c[m] == 'm') return e18();
 		else if(c[m] == 'e') return e20();
 		else if(c[m] == 't') return e27();
+		else if(c[m] == 's') return e32();
 		else return false;
 	}
 	else{
@@ -68,6 +75,7 @@ bool e1(){
 	else if(c[m] == 'a') return e7();
 	else if(c[m] == 'd') return e6();
 	else if(c[m] == 'l') return e22();
+	else if(c[m] == 'o') return e36();
 	else return false;
 }
 
@@ -158,6 +166,7 @@ bool e14(){
 	int m = n;
 	n++;
 	if(c[m] == 'o') return e15();
+	else if(c[m] == 'e') return e35();
 	else return false;
 }
 
@@ -280,6 +289,51 @@ bool e31(){
 	else return false;
 }
 
+bool e32()
+{
+	int m = n;
+	n++;
+	if(c[m] == 'k') return e33();
+	else return false;
+}
+
+bool e33()
+{
+	int m = n;
+	n++;
+	if(c[m] == 'o') return e34();
+	else return false;
+}
+
+bool e34()
+{
+	int m = n;
+	n++;
+	if(c[m] == 'l') return e6();
+	else return false;
+}
+
+bool e35()
+{
+	int m = n;
+	n++;
+	if(c[m] == 'i') return e6();
+	else return false;
+}
+
+bool e36(){
+	int m = n;
+	n++;
+	if(c[m] == 'p') return e37();
+	else return false;
+}
+
+bool e37(){
+	int m = n;
+	n++;
+	if(c[m] == 'y') return e6();
+	else return false;
+}
 
 // AUTOMATO CREATE
 

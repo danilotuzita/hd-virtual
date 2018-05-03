@@ -502,8 +502,17 @@ erro HD::renomear(unsigned int pai, unsigned int bloco, string novoNome){
 }
 
 int HD::localizaObjeto(unsigned int pai, string filho, bool tipo){
-	
+	cout << "Nome: " << getNome(pai) << endl;
 	unsigned int pos;
+	
+	split t = u.separar(filho, '/');
+	
+	if(t.t2 != "" && tipo == TIPO_PASTA){
+        pos = localizaObjeto(pai, t.t1, TIPO_PASTA);
+        cout << "Filho: " << getNome(pos) << endl;
+        trilha.push_back(pos);
+		return localizaObjeto(pos, t.t2, TIPO_PASTA);
+	}
 	
 	queue<unsigned int> pasta = abrePasta(pai);
 	
@@ -513,10 +522,10 @@ int HD::localizaObjeto(unsigned int pai, string filho, bool tipo){
 		if(getTipo(pos) == tipo)
 			if(filho == getNome(pos))
 				return pos;
-				
+	
 		pasta.pop();
 	}
-	
+	clearTrilha();
 	return 0;
 }
 
@@ -549,6 +558,14 @@ void HD::propriedadesHD(string * mensagem){
 
 unsi HD::getTamanho(){
 	return TAM;
+}
+
+void HD::clearTrilha(){
+	trilha.clear();
+}
+
+vector<unsi> HD::getTrilha(){
+	return trilha;
 }
 
 // prints
@@ -604,7 +621,7 @@ string HD::getNome(unsigned int pos)
 
 bool HD::getTipo(unsigned int pos)
 {
-	return hd[pos].isFolder();
+	return pos > 0 ? hd[pos].isFolder() : TIPO_ARQUIVO;
 }
 
 // posicoes
