@@ -12,7 +12,7 @@ Projeto de sistemas operacionais
 - [x] ARQUIVOS - Remover
 - [x] ARQUIVOS - Copiar
 - [ ] ARQUIVOS - Editar
-- [ ] ARQUIVOS - Mover
+- [x] ARQUIVOS - Mover
 - [x] ARQUIVOS - Renomear
 - [x] HD VIRTUAL - Listar HDs já criados
 - [x] HD VIRTUAL - Propriedades (espaço)
@@ -24,7 +24,7 @@ Projeto de sistemas operacionais
 - [x] PASTAS - Remover
 - [x] PASTAS - Renomear
 - [x] PASTAS - Copiar
-- [ ] PASTAS - Mover
+- [x] PASTAS - Mover
 
 ## Como utilizar o git no projeto
 

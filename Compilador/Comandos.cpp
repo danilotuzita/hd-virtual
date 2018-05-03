@@ -263,7 +263,7 @@ void Comandos::remover(){
 	c.clear();
 	c = t.t1;
 	
-	int pos;
+	int pos = 0, pasta;
 
 	if(c0()){
 		if(t.t1 == "-hd"){
@@ -293,9 +293,21 @@ void Comandos::remover(){
 				e.status = true;
 			}
 			else{
-				pos = hd->localizaObjeto(hd->getLocalAtual(), t.t2, TIPO_ARQUIVO);
+				
+				
+				split caminho = u.separar(t.t2, '/', true);
+				
+				if(caminho.t1 != ""){
+					pasta = hd->localizaObjeto(hd->getLocalAtual(), caminho.t1, TIPO_PASTA);	
+				}
+				else pasta = hd->getLocalAtual();
+				
+				if(pasta != 0){
+					pos = hd->localizaObjeto(pasta, caminho.t2, TIPO_ARQUIVO);									
+				}				
+					
 				if(pos){
-					hd->deleta(hd->getLocalAtual(), pos);
+					hd->deleta(pasta, pos);
 					cout << "Arquivo " << t.t2 << " removido" << endl;						
 				}
 				else{
@@ -376,6 +388,8 @@ void Comandos::format(){
 		        hd->openHD(nomeHD);
 		    	
 			    hdSelecionado = true;
+			    caminho.clear();
+			    trilha.clear();
 				
 			}
 			else{
@@ -390,17 +404,76 @@ void Comandos::format(){
 }
 
 void Comandos::move(){
+	
 	t = separar(getParametros());
+	unsi origem = 0, destino = 0, pai = 0;
+	
 	if(t.t1 == ""){
+		e.mensagem = "Informe o tipo de move\n";
+		e.status = true;
+		return;
+	}
+	split nomes = separar(t.t2);
+	if(nomes.t1 == ""){
 		e.mensagem = "Informe os parametros de origem e destino\n";
 		e.status = true;
+		return;
 	}
-	else if(t.t2 == ""){
+	else if(nomes.t2 == ""){
 		e.mensagem = "Informe o parametro de destino\n";
 		e.status = true;
+		return;
 	}
 	else {
-		cout << "Enviando arquivo de " << t.t1 << " para " << t.t2 << endl;
+		split caminho;
+		vector<unsi> temp;
+		if(t.t1 == "-f"){
+			caminho = u.separar(nomes.t1, '/', true);
+			if(caminho.t1 != ""){
+				origem = hd->localizaObjeto(hd->getLocalAtual(), caminho.t1, TIPO_PASTA, trilha);	
+				pai = origem;
+				if(origem == 0){
+					e.mensagem = "Origem nao encontrada\n";
+					e.status = true;
+					return;					
+				}
+				origem = hd->localizaObjeto(origem, caminho.t2, TIPO_ARQUIVO, trilha);	
+				if(origem == 0){
+					e.mensagem = "Origem nao encontrada\n";
+					e.status = true;
+					return;					
+				}
+			}
+			else{
+				origem = hd->localizaObjeto(hd->getLocalAtual(), nomes.t1, TIPO_ARQUIVO, trilha);
+				pai = hd->getLocalAtual();
+				cout << "Pai: " << pai << " Origem: " << origem << endl;
+			}
+		}
+		else if(t.t1 == "-d"){
+			origem = hd->localizaObjeto(hd->getLocalAtual(), nomes.t1, TIPO_PASTA, trilha);
+			temp = hd->getTrilha();
+			pai = temp.size() == 0 ? hd->getLocalAtual() : temp.back();
+		}
+		else{
+			e.mensagem = "Parametro invalido\n";
+			e.status = true;
+			return;
+		}
+		if(origem == 0){
+			e.mensagem = "Origem nao encontrada\n";
+			e.status = true;
+			return;
+		}		
+		destino = hd->localizaObjeto(hd->getLocalAtual(), nomes.t2, TIPO_PASTA, trilha);
+		cout << "Destino: " << destino << endl;
+		if(destino == 0){
+			e.mensagem = "Destino nao encontrado\n";
+			e.status = true;
+			return;
+		}		
+		hd->deletaRef(pai, origem);
+		hd->addPasta(destino, origem);
 	}
 }
 
