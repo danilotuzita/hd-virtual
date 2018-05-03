@@ -22,6 +22,7 @@
 #define POS_RAIZ 1
 
 #define unsi unsigned int
+static vector<unsi> DEFAULT_VECTOR;
 
 class HD
 {
@@ -67,7 +68,7 @@ class HD
 			
 			// util
 			erro renomear(unsigned int, unsigned int, string);
-			int localizaObjeto(unsigned int, string, bool);
+			int localizaObjeto(unsigned int, string, bool, vector<unsi> = DEFAULT_VECTOR);
 		
 		// UTIL
 		void propriedadesHD(string *);

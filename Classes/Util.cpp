@@ -133,18 +133,41 @@ string Util::trim(string entrada)
 	return retorno;
 }
 
-split Util::separar(string texto, char sep){
+split Util::separar(string texto, char sep, bool reverse){
 	int i;
 	split t;
 	t.t1.clear();
 	t.t2.clear();
-
-	for(i = 0; texto[i] != sep && (int) texto[i] != 0 ; i++) {
-		t.t1 += texto[i];
+	
+	if(!reverse){
+		for(i = 0; texto[i] != sep && (int) texto[i] != 0 ; i++) {
+			t.t1 += texto[i];
+		}
+		i++;
+		for(; i < texto.size(); i++){
+			t.t2 += texto[i];
+		}
 	}
-	i++;
-	for(; i < texto.size(); i++){
-		t.t2 += texto[i];
+	else{
+		for(i = (texto.size() - 1); i >= 0 && texto[i] != '/'; i--){
+			t.t2 = texto[i] + t.t2;
+		}
+		i--;
+		for(; i >= 0; i--){
+			t.t1 = texto[i] + t.t1;
+		}		
 	}
+	
 	return t;
 }
+
+
+
+
+
+
+
+
+
+
+

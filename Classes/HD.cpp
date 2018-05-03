@@ -501,17 +501,25 @@ erro HD::renomear(unsigned int pai, unsigned int bloco, string novoNome){
 	return e;
 }
 
-int HD::localizaObjeto(unsigned int pai, string filho, bool tipo){
-	cout << "Nome: " << getNome(pai) << endl;
+int HD::localizaObjeto(unsigned int pai, string filho, bool tipo, vector<unsi> trilha_atual){
+	//cout << "Nome: " << getNome(pai) << endl;
+	trilha = trilha_atual;
 	unsigned int pos;
 	
 	split t = u.separar(filho, '/');
 	
 	if(t.t2 != "" && tipo == TIPO_PASTA){
-        pos = localizaObjeto(pai, t.t1, TIPO_PASTA);
-        cout << "Filho: " << getNome(pos) << endl;
-        trilha.push_back(pos);
-		return localizaObjeto(pos, t.t2, TIPO_PASTA);
+		if(t.t1 == ".."){
+			trilha.pop_back();
+			pos = trilha.size() == 0 ? POS_RAIZ : trilha.back();
+		}
+		else{
+	        pos = localizaObjeto(pai, t.t1, TIPO_PASTA, trilha);
+	        if(pos == 0) return 0;
+	        //cout << "Filho: " << getNome(pos) << endl;
+	        trilha.push_back(pos);			
+		}
+		return localizaObjeto(pos, t.t2, TIPO_PASTA, trilha);
 	}
 	
 	queue<unsigned int> pasta = abrePasta(pai);

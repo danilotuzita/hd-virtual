@@ -25,7 +25,7 @@ class Comandos{
 		
 		string nomeHD;
 		string caminho;
-		vector<unsigned int> trilha;
+		vector<unsi> trilha;
 		
 		bool hdSelecionado;
 		

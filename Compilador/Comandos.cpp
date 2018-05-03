@@ -229,6 +229,10 @@ void Comandos::create(){
 				e.mensagem = "Informe o nome da pasta";
 				e.status = true;
 			}
+			else if(t.t2 == ".." || t.t2 == "." || t.t2 == "../"){
+				e.mensagem = "Nome invalido para pasta";
+				e.status = true;
+			}
 			else {
                 
 				int ret = hd->criaPasta(t.t2);
@@ -424,7 +428,7 @@ void Comandos::cd(){
 
 	unsigned int pos;
 	
-	if(getParametros() == ".."){
+	if(getParametros() == ".." || getParametros() == "../"){
 		if(trilha.size() != 0){
 			trilha.pop_back();
 			pos = trilha.size() == 0 ? POS_RAIZ : trilha.back();
@@ -434,7 +438,7 @@ void Comandos::cd(){
 	}
 	else{
 		hd->clearTrilha();
-		pos = hd->localizaObjeto(hd->getLocalAtual(), getParametros(), TIPO_PASTA);
+		pos = hd->localizaObjeto(hd->getLocalAtual(), getParametros(), TIPO_PASTA, trilha);
 	
 		if(!pos){
 			cout << "\nPasta " << getParametros() << " nao encontrada" << endl;		
@@ -545,7 +549,7 @@ void Comandos::typehd(){
 void Comandos::copy(){
 	t = separar(getParametros());
 
-	unsigned int origem, destino;
+	unsigned int origem, destino, pasta;
 
 	if(t.t1 == "-d"){
 
@@ -593,8 +597,18 @@ void Comandos::copy(){
 				e.status = true;
 			}
 			else{
-				origem = hd->localizaObjeto(hd->getLocalAtual(), nomes.t1, TIPO_ARQUIVO);
-				destino = hd->localizaObjeto(hd->getLocalAtual(), nomes.t2, TIPO_PASTA);
+				split caminho = u.separar(nomes.t1, '/', true);
+				
+				if(caminho.t1 != ""){
+					pasta = hd->localizaObjeto(hd->getLocalAtual(), caminho.t1, TIPO_PASTA);	
+				}
+				else pasta = hd->getLocalAtual();
+				
+				if(pasta != 0){
+					origem = hd->localizaObjeto(pasta, caminho.t2, TIPO_ARQUIVO);
+					destino = hd->localizaObjeto(hd->getLocalAtual(), nomes.t2, TIPO_PASTA);									
+				}
+
 				if(origem == 0){
                     e.mensagem = "Arquivo nao localizado\n";
 					e.status = true;

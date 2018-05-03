@@ -10,7 +10,7 @@ Projeto de sistemas operacionais
 - [x] ARQUIVOS - Criar
 - [x] ARQUIVOS - Exibir
 - [x] ARQUIVOS - Remover
-- [ ] ARQUIVOS - Copiar
+- [x] ARQUIVOS - Copiar
 - [ ] ARQUIVOS - Editar
 - [ ] ARQUIVOS - Mover
 - [x] ARQUIVOS - Renomear
@@ -23,7 +23,7 @@ Projeto de sistemas operacionais
 - [x] PASTAS - Navegar
 - [x] PASTAS - Remover
 - [x] PASTAS - Renomear
-- [ ] PASTAS - Copiar
+- [x] PASTAS - Copiar
 - [ ] PASTAS - Mover
 
 ## Como utilizar o git no projeto
