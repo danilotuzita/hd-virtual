@@ -12,6 +12,8 @@
 #include <dirent.h>
 #include <stdio.h>
 
+#define CLS system("PAUSE")
+
 using namespace std;
 
 typedef struct {

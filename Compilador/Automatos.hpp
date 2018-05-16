@@ -36,6 +36,7 @@ bool e34();
 bool e35();
 bool e36();
 bool e37();
+bool e38();
 
 bool c0();
 bool c1();
@@ -209,6 +210,7 @@ bool e20(){
 	int m = n;
 	n++;
 	if(c[m] == 'x') return e21();
+	else if(c[m] == 'd') return e38();
 	else return false;
 }
 
@@ -332,6 +334,13 @@ bool e37(){
 	int m = n;
 	n++;
 	if(c[m] == 'y') return e6();
+	else return false;
+}
+
+bool e38(){
+	int m = n;
+	n++;
+	if(c[m] == 'i') return e7();
 	else return false;
 }
 

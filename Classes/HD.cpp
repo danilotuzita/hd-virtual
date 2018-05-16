@@ -507,6 +507,13 @@ int HD::localizaObjeto(unsigned int pai, string filho, bool tipo, vector<unsi> t
 	unsigned int pos;
 	
 	split t = u.separar(filho, '/');
+
+	if(filho == ".") return getLocalAtual();
+	if(filho == ".."){
+		trilha.pop_back();
+		pos = trilha.size() == 0 ? POS_RAIZ : trilha.back();
+		return pos;		
+	}
 	
 	if(t.t2 != "" && tipo == TIPO_PASTA){
 		if(t.t1 == ".."){

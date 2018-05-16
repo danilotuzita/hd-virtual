@@ -129,6 +129,7 @@ erro Comandos::validarComando(){
 			else if(getComando() == "rename") renomear();
 			else if(getComando() == "typehd") typehd();
 			else if(getComando() == "copy")   copy();
+			else if(getComando() == "edit")   editar();
 			else if(getComando() == "?")      help();
 			else if(getComando() == "skol")   skol();
 			else if(getComando() == "fei")    fei();
@@ -447,7 +448,7 @@ void Comandos::move(){
 			else{
 				origem = hd->localizaObjeto(hd->getLocalAtual(), nomes.t1, TIPO_ARQUIVO, trilha);
 				pai = hd->getLocalAtual();
-				cout << "Pai: " << pai << " Origem: " << origem << endl;
+				//cout << "Pai: " << pai << " Origem: " << origem << endl;
 			}
 		}
 		else if(t.t1 == "-d"){
@@ -466,7 +467,7 @@ void Comandos::move(){
 			return;
 		}		
 		destino = hd->localizaObjeto(hd->getLocalAtual(), nomes.t2, TIPO_PASTA, trilha);
-		cout << "Destino: " << destino << endl;
+		//cout << "Destino: " << destino << endl;
 		if(destino == 0){
 			e.mensagem = "Destino nao encontrado\n";
 			e.status = true;
@@ -474,6 +475,7 @@ void Comandos::move(){
 		}		
 		hd->deletaRef(pai, origem);
 		hd->addPasta(destino, origem);
+		cout << (t.t1 == "-f" ? "Arquivo movido " : "Pasta movida ") << "com sucesso" << endl;
 	}
 }
 
@@ -509,7 +511,7 @@ void Comandos::cd(){
 			montaCaminho();
 		}
 	}
-	else{
+	else if(getParametros() != "."){
 		hd->clearTrilha();
 		pos = hd->localizaObjeto(hd->getLocalAtual(), getParametros(), TIPO_PASTA, trilha);
 	
@@ -532,7 +534,7 @@ void Comandos::montaCaminho(){
 	
 	if(trilha.size() != 0){
 		for(int i = 0; i < trilha.size(); i++){
-			caminho += "\\" + hd->getNome(trilha[i]);
+			caminho += "/" + hd->getNome(trilha[i]);
 		}	
 	}
 }
@@ -700,6 +702,25 @@ void Comandos::copy(){
 	}
 	else {
         e.mensagem = "Parametro nao reconhecido\n";
+		e.status = true;
+	}
+}
+
+void Comandos::editar(){
+	if(hdSelecionado){
+		int pos = hd->localizaObjeto(hd->getLocalAtual(), getParametros(), TIPO_ARQUIVO);
+	
+		if(!pos){
+			cout << "\nArquivo " << getParametros() << " nao encontrado" << endl;
+		}
+		else {
+			string conteudo = hd->leArquivo(pos);
+			Editor ed(conteudo);
+			cout << "\n Antes: " << conteudo << " -- Depois: " << ed.conteudo << "\n\n";
+		}
+	}
+	else{
+		e.mensagem = "Selecone um HD\n";
 		e.status = true;
 	}
 }

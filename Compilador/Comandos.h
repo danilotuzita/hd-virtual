@@ -1,13 +1,15 @@
 #include <cstdlib>
 #include <string>
 #include <queue>
+
+#ifndef COMANDOS_H
+#define COMANDOS_H
+
 #include "../Classes/Util.h"
 #include "../Classes/HD.h"
+#include "../Classes/Editor.h"
 
 using namespace std;
-
-#ifndef COMANDOS
-#define COMANDOS
 
 class Comandos{
 
@@ -42,6 +44,7 @@ class Comandos{
 			void df();
 			void cat();
 			void copy();
+			void editar();
 
 			void cd();
 			void montaCaminho();
