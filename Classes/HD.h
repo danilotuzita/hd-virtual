@@ -23,6 +23,7 @@
 
 #define unsi unsigned int
 static vector<unsi> DEFAULT_VECTOR;
+static int zero = 0;
 
 class HD
 {
@@ -56,7 +57,7 @@ class HD
 			
 			// arquivo
 			unsi criaArquivo(string, string);
-			string leArquivo(unsigned int);
+			string leArquivo(unsigned int, int * = &zero);
 			void deletaArquivo(unsigned int);
 			
 			// pasta

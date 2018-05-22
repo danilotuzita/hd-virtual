@@ -558,12 +558,17 @@ void Comandos::ls(){
 		
 		//cout<<"LOCAL: "<<hd->getLocalAtual()<<endl;
 		pasta = hd->abrePasta(hd->getLocalAtual());
-		
+		int tamanho = 10;
 		while(!pasta.empty())
 		{
 			pos = pasta.front();
 			if(hd->getTipo(pos) == TIPO_PASTA) cout << "/";
-			cout << hd->getNome(pos)<< " | ";
+			cout << hd->getNome(pos);
+			if(hd->getTipo(pos) == TIPO_ARQUIVO){
+				hd->leArquivo(pos, &tamanho);
+				cout << " " << (tamanho * MAX_BYTE) << " bytes ";
+			}
+			cout << endl;
 			pasta.pop();
 		}
 		cout << endl;
@@ -715,8 +720,13 @@ void Comandos::editar(){
 		}
 		else {
 			string conteudo = hd->leArquivo(pos);
-			Editor ed(conteudo);
-			cout << "\n Antes: " << conteudo << " -- Depois: " << ed.conteudo << "\n\n";
+			string nome = u.trim(hd->getNome(pos));
+			Editor ed(u.trim(conteudo));
+			cout << "Local: " << hd->getLocalAtual() << endl;
+			hd->deleta(hd->getLocalAtual(), pos);
+			pos = hd->criaArquivo(nome, ed.conteudo);
+			e = hd->addPasta(hd->getLocalAtual(), pos);
+			cout << e.status <<"\n Antes: " << conteudo << " -- Depois: " << ed.conteudo << "\n\n";
 		}
 	}
 	else{

@@ -302,7 +302,8 @@ unsi HD::copiaPasta(unsigned int bloco)
 
 unsi HD::copiaArquivo(unsigned int bloco)
 {
-	return criaArquivo(getNome(bloco), leArquivo(bloco));
+	string conteudo = u.trim(leArquivo(bloco));
+	return criaArquivo(getNome(bloco), conteudo);
 }
 
 unsi HD::criaArquivo(string nome, string dados)
@@ -311,6 +312,7 @@ unsi HD::criaArquivo(string nome, string dados)
 	hd[i].clearDados();
 	
 	unsi primeiroBloco = i;
+	cout << "Primeiro bloco: " << primeiroBloco << endl;
 	if(i == -1)
 		return -1; // HD ESTA SEM ESPACO
 	
@@ -344,20 +346,22 @@ unsi HD::criaArquivo(string nome, string dados)
 	return primeiroBloco;
 }
 
-string HD::leArquivo(unsigned int pos)
+string HD::leArquivo(unsigned int pos, int * qtdeBlocos)
 {
 	if(pos > TAM || !hd[pos].temNome() || hd[pos].isFree())
 		return "";
 	
 	string retorno = "";
+	*qtdeBlocos = 0;
 	
 	int next = pos;
 	do
 	{
 		retorno += hd[next].getDados();
 		next = hd[next].getMemoria();
+		*qtdeBlocos = *qtdeBlocos + 1;
 	}while(next);
-	
+
 	return retorno;
 }
 
